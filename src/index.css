@@ -81,7 +81,69 @@
   --color-ring: var(--ring);
 }
 
+/* Default theme: AyurNexa gold (dark) */
 :root {
+  --color-primary-50: #fdf8ec;
+  --color-primary-100: #f9edcd;
+  --color-primary-200: #f2d99a;
+  --color-primary-300: #e9c87a;
+  --color-primary-400: #e0b95f;
+  --color-primary-500: #d8b45d;
+  --color-primary-600: #c9a24a;
+  --color-primary-700: #b98b35;
+  --color-primary-800: #9a732c;
+  --color-primary-900: #7a5a22;
+  --color-primary-950: #4a3614;
+
+  --color-secondary-50: #fff7e6;
+  --color-secondary-100: #ffe9bf;
+  --color-secondary-200: #ffd280;
+  --color-secondary-300: #f3d98d;
+  --color-secondary-400: #e6c46a;
+  --color-secondary-500: #d8b45d;
+  --color-secondary-600: #b98b35;
+  --color-secondary-700: #9a732c;
+  --color-secondary-800: #7a5a22;
+  --color-secondary-900: #5a4218;
+  --color-secondary-950: #3a2a0e;
+
+  --background: #090909;
+  --foreground: #f8f5ed;
+  --card: #141414;
+  --card-foreground: #f8f5ed;
+  --muted: #1a1a1a;
+  --muted-foreground: #b9b2a2;
+  --border: #3a3020;
+  --ring: #d8b45d;
+  --radius: 1rem;
+}
+
+/* Second theme: current green */
+[data-theme="green"] {
+  --color-primary-50: #F0F7F3;
+  --color-primary-100: #DCEEE3;
+  --color-primary-200: #B9DDC9;
+  --color-primary-300: #8FC4A8;
+  --color-primary-400: #5FA583;
+  --color-primary-500: #3D8A63;
+  --color-primary-600: #2A6F4D;
+  --color-primary-700: #1F563B;
+  --color-primary-800: #173E2A;
+  --color-primary-900: #133624;
+  --color-primary-950: #0A2216;
+
+  --color-secondary-50: #FDF8EC;
+  --color-secondary-100: #F9EDCD;
+  --color-secondary-200: #F2D99A;
+  --color-secondary-300: #E9D49A;
+  --color-secondary-400: #E3C67B;
+  --color-secondary-500: #D4A73A;
+  --color-secondary-600: #B88A2A;
+  --color-secondary-700: #946D1F;
+  --color-secondary-800: #7A581A;
+  --color-secondary-900: #664A17;
+  --color-secondary-950: #3A280A;
+
   --background: #F7FAF8;
   --foreground: #0F1A14;
   --card: #FFFFFF;
@@ -90,18 +152,6 @@
   --muted-foreground: #4B6358;
   --border: #DCEAE2;
   --ring: #2A6F4D;
-  --radius: 1rem;
-}
-
-.dark {
-  --background: #0A1410;
-  --foreground: #EAF4EE;
-  --card: #101F18;
-  --card-foreground: #EAF4EE;
-  --muted: #14261D;
-  --muted-foreground: #9FC4B1;
-  --border: #1F3A2D;
-  --ring: #5FA583;
 }
 
 html {

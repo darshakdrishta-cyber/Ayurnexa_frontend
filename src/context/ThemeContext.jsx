@@ -3,19 +3,19 @@ import { createContext, useContext, useEffect, useState } from 'react'
 const ThemeContext = createContext(null)
 
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState('light')
+  const [theme, setTheme] = useState('gold')
 
   useEffect(() => {
     const stored = localStorage.getItem('ayurnexa_theme')
-    const isDark = stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)
-    setTheme(isDark ? 'dark' : 'light')
-    document.documentElement.classList.toggle('dark', isDark)
+    const initial = stored === 'green' ? 'green' : 'gold'
+    setTheme(initial)
+    document.documentElement.setAttribute('data-theme', initial)
   }, [])
 
   const toggle = () => {
-    const next = theme === 'light' ? 'dark' : 'light'
+    const next = theme === 'gold' ? 'green' : 'gold'
     setTheme(next)
-    document.documentElement.classList.toggle('dark', next === 'dark')
+    document.documentElement.setAttribute('data-theme', next)
     localStorage.setItem('ayurnexa_theme', next)
   }
 
