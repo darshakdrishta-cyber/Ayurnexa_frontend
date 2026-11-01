@@ -8,7 +8,7 @@ import { ProductCard } from '../landing/Shop'
 import { useCart } from '../../context/CartContext'
 import { useAppDispatch, useAppSelector } from '../../hooks/redux'
 import { fetchProducts, searchProductsThunk, clearProduct } from '../../store/slices/productSlice'
-import { CATEGORY_LABEL, PRODUCTS } from '../../data/products'
+import { CATEGORY_LABEL } from '../../data/products'
 
 export function ProductList() {
   const dispatch = useAppDispatch()
@@ -33,7 +33,7 @@ export function ProductList() {
   }, [query, dispatch, searchParams])
 
   const productSource = useMemo(() => {
-    return products && products.length > 0 ? products : (!loading ? PRODUCTS : [])
+    return products && products.length > 0 ? products : []
   }, [products, loading])
 
   const visible = useMemo(() => {
@@ -142,7 +142,12 @@ export function ProductList() {
             <p className="text-sm text-muted-foreground">Loading catalogue…</p>
           </div>
         )}
-        {visible.length === 0 && !loading && !error && (
+        {visible.length === 0 && !loading && !error && productSource.length === 0 && (
+          <div className="py-24 text-center">
+            <p className="font-display text-2xl font-semibold text-foreground">NO products</p>
+          </div>
+        )}
+        {visible.length === 0 && !loading && !error && productSource.length > 0 && (
           <div className="py-24 text-center">
             <p className="font-display text-2xl font-semibold text-foreground">No matches found</p>
             <p className="mt-2 text-sm text-muted-foreground">Try a different keyword or category.</p>

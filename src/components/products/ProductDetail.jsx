@@ -18,7 +18,7 @@ import { ProductImage } from '../common/ProductImage'
 import { useCart } from '../../context/CartContext'
 import { useAppDispatch, useAppSelector } from '../../hooks/redux'
 import { fetchProduct, clearProduct } from '../../store/slices/productSlice'
-import { CATEGORY_LABEL, PRODUCTS } from '../../data/products'
+import { CATEGORY_LABEL } from '../../data/products'
 
 export function ProductDetail() {
   const dispatch = useAppDispatch()
@@ -37,7 +37,7 @@ export function ProductDetail() {
     }
   }, [dispatch, id])
 
-  const rawProduct = apiProduct || PRODUCTS.find((p) => String(p.id) === String(id))
+  const rawProduct = apiProduct
 
   const product = rawProduct
     ? {

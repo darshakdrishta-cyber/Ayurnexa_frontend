@@ -6,7 +6,7 @@ import { Button, LinkButton } from '../common/Button'
 import { Badge } from '../common/Card'
 import { Reveal, SectionHeading } from '../common/Reveal'
 import { ProductImage } from '../common/ProductImage'
-import { CATEGORY_LABEL, PRODUCTS } from '../../data/products'
+import { CATEGORY_LABEL } from '../../data/products'
 import { useCart } from '../../context/CartContext'
 import { useAppDispatch, useAppSelector } from '../../hooks/redux'
 import { fetchProducts } from '../../store/slices/productSlice'
@@ -103,7 +103,7 @@ export function Shop() {
     dispatch(fetchProducts())
   }, [dispatch])
 
-  const productSource = products && products.length > 0 ? products : (!loading ? PRODUCTS : [])
+  const productSource = products && products.length > 0 ? products : []
   const visible = productSource.map((product) => ({
     id: product.productId || product.id,
     name: product.productName || product.name || 'Product',
@@ -129,6 +129,10 @@ export function Shop() {
           <span className="h-8 w-8 animate-spin rounded-full border-2 border-border border-t-primary-600 mb-3" />
           <p className="text-sm text-muted-foreground">Loading catalogue…</p>
         </div>
+      )}
+
+      {!loading && visible.length === 0 && (
+        <div className="py-24 text-center text-muted-foreground">NO products</div>
       )}
 
       {visible.length > 0 && (
