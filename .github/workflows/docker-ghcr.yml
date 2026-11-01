@@ -82,5 +82,14 @@ jobs:
             for pid in $(ss -ltnp 'sport = :5173' 2>/dev/null | grep -oP 'pid=\K[0-9]+' | sort -u); do kill -9 "$pid" || true; done
             docker rm -f ayurnexa || true
             for c in $(docker ps -q --filter "publish=5173"); do docker rm -f "$c" || true; done
-            docker run -d --name ayurnexa --env-file /opt/ayurnexa/frontend.env -p 5173:80 --restart unless-stopped ghcr.io/${{ github.repository_owner }}/ayurnexa-frontend:latest
+            set -a
+            . /opt/ayurnexa/frontend.env
+            set +a
+            docker run -d --name ayurnexa \
+              -e VITE_API_BASE_URL="$VITE_API_BASE_URL" \
+              -e VITE_API_KEY="$VITE_API_KEY" \
+              -e VITE_APP_NAME="$VITE_APP_NAME" \
+              -e VITE_GOOGLE_CLIENT_ID="$VITE_GOOGLE_CLIENT_ID" \
+              -e VITE_RAZORPAY_KEY_ID="$VITE_RAZORPAY_KEY_ID" \
+              -p 5173:80 --restart unless-stopped ghcr.io/${{ github.repository_owner }}/ayurnexa-frontend:latest
             docker image prune -f
