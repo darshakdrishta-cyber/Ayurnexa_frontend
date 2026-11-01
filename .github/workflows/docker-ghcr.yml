@@ -77,7 +77,5 @@ jobs:
             docker pull ghcr.io/${{ github.repository_owner }}/ayurnexa-frontend:latest
             # remove any container named ayurnexa or publishing port 80
             docker rm -f ayurnexa || true
-            for c in $(docker ps -q --filter "publish=80"); do docker rm -f "$c" || true; done
-            docker rmi ghcr.io/${{ github.repository_owner }}/ayurnexa-frontend:latest 2>/dev/null || true
-            docker run -d --name ayurnexa -p 80:80 --restart unless-stopped ghcr.io/${{ github.repository_owner }}/ayurnexa-frontend:latest
+            docker run -d --name ayurnexa -p 8080:80 --restart unless-stopped ghcr.io/${{ github.repository_owner }}/ayurnexa-frontend:latest
             docker image prune -f
