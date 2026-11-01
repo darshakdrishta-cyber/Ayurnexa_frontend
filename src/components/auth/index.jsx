@@ -1,12 +1,6 @@
-import { useState } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { ArrowRight, Mail, Lock, User, Eye, EyeOff } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Button } from '../common/Button'
-import { Field, Input, InputIcon } from '../common/Input'
 import { GoogleSignInButton } from '../common/GoogleSignIn'
-import { useAppDispatch } from '../../hooks/redux'
-import { loginUser, registerUser, clearError } from '../../store/slices/authSlice'
 
 function AuthShell({ children, title, subtitle, side, footer }) {
   return (
@@ -37,7 +31,8 @@ function AuthShell({ children, title, subtitle, side, footer }) {
                 Discreet packaging
               </span>
               <span className="flex items-center gap-2">
-                <Lock className="h-4 w-4" /> Secure checkout
+                <span className="h-4 w-4 rounded-full bg-secondary-500" aria-hidden="true" />
+                Secure checkout
               </span>
             </div>
           </div>
@@ -64,62 +59,7 @@ function AuthShell({ children, title, subtitle, side, footer }) {
   )
 }
 
-function PasswordInput({ id, value, onChange, placeholder = '••••••••' }) {
-  const [show, setShow] = useState(false)
-  return (
-    <div className="relative">
-      <InputIcon icon={Lock}>
-        <Input
-          id={id}
-          type={show ? 'text' : 'password'}
-          required
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder}
-          autoComplete="current-password"
-        />
-      </InputIcon>
-      <button
-        type="button"
-        onClick={() => setShow((v) => !v)}
-        className="absolute right-3 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted"
-        aria-label={show ? 'Hide password' : 'Show password'}
-      >
-        {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-      </button>
-    </div>
-  )
-}
-
 export function Login() {
-  const dispatch = useAppDispatch()
-  const navigate = useNavigate()
-  const location = useLocation()
-  const from = location.state?.from || '/'
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-    setError('')
-    dispatch(clearError())
-    try {
-      const res = await dispatch(loginUser({ email, password }))
-      if (loginUser.fulfilled.match(res)) {
-        navigate(from, { replace: true })
-      } else {
-        setError(res.payload || 'Invalid email or password. Please try again.')
-      }
-    } catch (err) {
-      setError(err?.message || 'Login failed. Please try again.')
-    } finally {
-      setLoading(false)
-    }
-  }
-
   return (
     <AuthShell
       title="Welcome back"
@@ -134,101 +74,19 @@ export function Login() {
         </>
       }
     >
-      <div className="mt-8 space-y-5">
+      <div className="mt-10 space-y-3">
         <GoogleSignInButton className="w-full" />
         <p className="relative text-xs text-muted-foreground">
           <span className="relative flex h-5 w-full items-center border-t border-border">
-            <span className="relative -top-[0.7em] bg-background px-2 text-sm">Or continue with email</span>
+            <span className="relative -top-[0.7em] bg-background px-2 text-sm">Continue with Google</span>
           </span>
         </p>
-        <form onSubmit={handleSubmit} className="mt-2 space-y-5">
-          <Field label="Email address" htmlFor="email">
-            <InputIcon icon={Mail}>
-              <Input
-                id="email"
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                autoComplete="email"
-              />
-            </InputIcon>
-          </Field>
-          <Field label="Password" htmlFor="password">
-            <PasswordInput id="password" value={password} onChange={setPassword} />
-          </Field>
-          {error && (
-            <motion.p
-              role="alert"
-              initial={{ opacity: 0, y: -4 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="rounded-xl border border-destructive/25 bg-destructive-50 px-4 py-3 text-sm font-medium text-destructive dark:bg-destructive-950/40"
-            >
-              {error}
-            </motion.p>
-          )}
-          <Button type="submit" size="lg" className="w-full" disabled={loading}>
-            {loading ? 'Signing in…' : 'Sign in'}
-            <ArrowRight className="h-4 w-4" />
-          </Button>
-        </form>
       </div>
     </AuthShell>
   )
 }
 
 export function Signup() {
-  const dispatch = useAppDispatch()
-  const navigate = useNavigate()
-  const location = useLocation()
-  const from = location.state?.from || '/'
-  const [form, setForm] = useState({ username: '', email: '', password: '' })
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-
-  const update = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }))
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    if (!form.username.trim() || !form.email.trim() || !form.password) {
-      setError('Please fill in all fields.')
-      return
-    }
-    if (form.password.length < 6) {
-      setError('Password must be at least 6 characters.')
-      return
-    }
-
-    setLoading(true)
-    setError('')
-    dispatch(clearError())
-    try {
-      const res = await dispatch(registerUser(form))
-      if (registerUser.fulfilled.match(res)) {
-        // If registration response already returned user/token or set cookie:
-        if (res.payload?.token || res.payload?.user) {
-          navigate(from, { replace: true })
-          return
-        }
-
-        // Automatically sign in with the new credentials
-        const loginRes = await dispatch(loginUser({ email: form.email, password: form.password }))
-        if (loginUser.fulfilled.match(loginRes)) {
-          navigate(from, { replace: true })
-        } else {
-          navigate('/login', { state: { from } })
-        }
-      } else {
-        setError(res.payload || 'Registration failed. Please check your details and try again.')
-      }
-    } catch (err) {
-      setError(err?.message || 'Registration failed. Please try again.')
-    } finally {
-      setLoading(false)
-    }
-  }
-
   return (
     <AuthShell
       title="Create your account"
@@ -243,64 +101,12 @@ export function Signup() {
         </>
       }
     >
-      <div className="mt-8 space-y-5">
+      <div className="mt-10 space-y-3">
         <GoogleSignInButton className="w-full" text="Sign up with Google" />
         <p className="relative text-xs text-muted-foreground">
           <span className="relative flex h-5 w-full items-center border-t border-border">
-            <span className="relative -top-[0.7em] bg-background px-2 text-sm">Or create with email</span>
+            <span className="relative -top-[0.7em] bg-background px-2 text-sm">Continue with Google</span>
           </span>
-        </p>
-        <form onSubmit={handleSubmit} className="mt-2 space-y-5">
-          <Field label="Full name" htmlFor="username">
-            <InputIcon icon={User}>
-              <Input
-                id="username"
-                type="text"
-                required
-                value={form.username}
-                onChange={update('username')}
-                placeholder="Arjun Mehta"
-                autoComplete="name"
-              />
-            </InputIcon>
-          </Field>
-          <Field label="Email address" htmlFor="email-signup">
-            <InputIcon icon={Mail}>
-              <Input
-                id="email-signup"
-                type="email"
-                required
-                value={form.email}
-                onChange={update('email')}
-                placeholder="you@example.com"
-                autoComplete="email"
-              />
-            </InputIcon>
-          </Field>
-          <Field
-            label="Password"
-            htmlFor="password-signup"
-            hint="At least 6 characters."
-          >
-            <PasswordInput id="password-signup" value={form.password} onChange={update('password')} />
-          </Field>
-          {error && (
-            <motion.p
-              role="alert"
-              initial={{ opacity: 0, y: -4 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="rounded-xl border border-destructive/25 bg-destructive-50 px-4 py-3 text-sm font-medium text-destructive dark:bg-destructive-950/40"
-            >
-              {error}
-            </motion.p>
-          )}
-          <Button type="submit" size="lg" className="w-full" disabled={loading}>
-            {loading ? 'Creating account…' : 'Create account'}
-            <ArrowRight className="h-4 w-4" />
-          </Button>
-        </form>
-        <p className="mt-6 text-xs leading-relaxed text-muted-foreground">
-          By continuing you agree to our Terms of Service and Privacy Policy.
         </p>
       </div>
     </AuthShell>
