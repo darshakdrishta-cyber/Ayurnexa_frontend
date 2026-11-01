@@ -17,14 +17,12 @@ import { useAppDispatch, useAppSelector } from '../../hooks/redux'
 import logo from '../../assets/AyurnexaWebsiteLogo.png'
 import { useCart } from '../../context/CartContext'
 import { logoutUser } from '../../store/slices/authSlice'
-import { ErrorLogModal } from './ErrorLogModal'
 
 const NAV_LINKS = [
   { label: 'Home', to: '/' },
   { label: 'Shop', to: '/products' },
   { label: 'Our story', hash: 'story' },
   { label: 'Categories', hash: 'shop' },
-  { label: 'Error log', to: '/error-log' },
 ]
 
 export function Navbar() {
@@ -36,7 +34,6 @@ export function Navbar() {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [errorLogOpen, setErrorLogOpen] = useState(false)
   const [cartOpen, setCartOpen] = useState(false)
 
   const menuRef = useRef(null)
@@ -165,12 +162,6 @@ export function Navbar() {
           </nav>
 
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => setErrorLogOpen(true)}
-              className="hidden rounded-full border border-border bg-card px-3 py-1.5 text-xs font-semibold text-foreground transition hover:bg-muted sm:inline-flex"
-            >
-              Error log
-            </button>
             <ThemeToggle />
 
             {/* Shopping Bag Button & Dropdown - Always visible to guests and users! */}
@@ -403,15 +394,6 @@ export function Navbar() {
                               <LayoutDashboard className="h-4 w-4 text-muted-foreground" /> Admin Panel
                             </button>
                           )}
-                          <button
-                            onClick={() => {
-                              setMenuOpen(false)
-                              setErrorLogOpen(true)
-                            }}
-                            className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium text-foreground transition hover:bg-muted"
-                          >
-                            Error log
-                          </button>
                         </div>
 
                         <div className="border-t border-border pt-1">
@@ -568,7 +550,6 @@ export function Navbar() {
           )}
         </AnimatePresence>
       </header>
-      <ErrorLogModal open={errorLogOpen} onClose={() => setErrorLogOpen(false)} />
     </>
   )
 }

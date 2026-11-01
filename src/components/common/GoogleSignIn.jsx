@@ -38,8 +38,7 @@ export function GoogleSignInButton({ className = '', text = 'Continue with Googl
         }
         navigate(from, { replace: true })
       }
-    } catch (err) {
-      console.error('Google Sign-in failed', err)
+    } catch {
     }
   }
 

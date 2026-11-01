@@ -11,7 +11,6 @@ import Footer from './components/common/Footer'
 import LandingPage from './pages/Landing'
 import LoginPage from './pages/Login'
 import SignupPage from './pages/Signup'
-import ErrorLogPage from './pages/ErrorLog'
 import ProductsPage, { ProductDetail, OrderTrackPage } from './pages/Products'
 import CartPage from './pages/Cart'
 import AdminLayout from './components/admin/AdminLayout'
@@ -99,7 +98,6 @@ function AppShell() {
             <Route path="/products/:id" element={<ProductDetail />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/orders" element={<AuthRequired><OrderTrackPage /></AuthRequired>} />
-            <Route path="/error-log" element={<ErrorLogPage />} />
             <Route path="/admin" element={
               <AdminRequired>
                 <AdminLayout><AdminOrders /></AdminLayout>
