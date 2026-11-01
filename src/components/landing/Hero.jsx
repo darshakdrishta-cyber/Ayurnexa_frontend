@@ -22,7 +22,7 @@ export function Hero() {
 
   return (
     <section ref={ref} className="relative isolate overflow-hidden bg-background">
-      <div className="container relative grid min-h-[min(760px,calc(100svh-70px))] items-center gap-12 py-12 sm:py-16 lg:grid-cols-[0.95fr_1.05fr] lg:gap-16 lg:py-20">
+      <div className="container relative grid min-h-[min(760px,calc(100svh-70px))] items-center gap-12 py-12 sm:py-16 lg:grid-cols-1 lg:py-20">
         <div className="relative z-10 flex flex-col items-start gap-6 lg:py-12">
           <motion.p
             initial={reduce ? false : { opacity: 0, y: 12 }}
@@ -51,25 +51,7 @@ export function Hero() {
             Ayurnex Bana is an Ayurvedic vitality formula built to support stamina, drive and intimate performance — so you show up with confidence, night after night. Powerful sex drive, restored naturally. Discreet packaging, private delivery.
           </motion.p>
 
-          <motion.div
-            initial={reduce ? false : { opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.24, ease: EASE }}
-            className="flex w-full flex-col gap-3 pt-1 sm:w-auto sm:flex-row"
-          >
-            <LinkButton to="/products" size="lg" className="w-full sm:w-auto">
-              Try Ayurnex Bana <ArrowRight className="h-4 w-4" />
-            </LinkButton>
-            {!isAuthenticated ? (
-              <LinkButton to="/signup" variant="outline" size="lg" className="w-full sm:w-auto">
-                Create an account
-              </LinkButton>
-            ) : (
-              <LinkButton to="/orders" variant="outline" size="lg" className="w-full sm:w-auto">
-                My orders
-              </LinkButton>
-            )}
-          </motion.div>
+  
 
           <div className="mt-2 flex flex-wrap gap-x-6 gap-y-3 border-t border-border pt-5">
             {TRUST_POINTS.map(({ icon: Icon, label }) => (

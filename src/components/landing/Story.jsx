@@ -11,22 +11,8 @@ const DETAILS = [
 export function Story() {
   return (
     <section id="story" className="scroll-mt-24 border-y border-border bg-muted/50 py-20 sm:py-24">
-      <div className="container grid items-center gap-12 lg:grid-cols-[1fr_0.9fr] lg:gap-20">
-        <Reveal className="relative">
-          <div className="relative aspect-[5/4] overflow-hidden bg-primary-900">
-            <img
-              src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=1200&q=85"
-              alt="Confident man after restoring his vitality with Ayurnex Bana"
-              loading="lazy"
-              className="absolute inset-0 h-full w-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-primary-950/50 to-transparent" />
-            <p className="absolute bottom-5 left-5 font-display text-xl text-white sm:bottom-7 sm:left-7 sm:text-2xl">
-              After Ayurnex Bana
-            </p>
-          </div>
-          <span className="absolute -bottom-2 -right-2 h-16 w-16 border-b-4 border-r-4 border-secondary-500" aria-hidden="true" />
-        </Reveal>
+      <div className="container grid items-center gap-12 lg:grid-cols-1 lg:gap-20">
+
 
         <div className="flex flex-col items-start gap-5">
           <Reveal>
