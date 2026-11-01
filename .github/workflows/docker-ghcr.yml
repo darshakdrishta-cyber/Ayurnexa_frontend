@@ -79,5 +79,3 @@ jobs:
             docker rm ayurnexa || true
             docker run -d --name ayurnexa -p 80:80 --restart unless-stopped ghcr.io/${{ github.repository_owner }}/ayurnexa_frontend:latest
             docker image prune -f
-EOF
-echo done
