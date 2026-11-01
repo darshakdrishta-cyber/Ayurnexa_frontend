@@ -9,6 +9,7 @@ const TRUST_POINTS = [
   { icon: PackageCheck, label: 'Batch-tested formula' },
   { icon: ShieldCheck, label: 'Discreet packaging' },
   { icon: Zap, label: 'Fast-acting vitality support' },
+  { icon: ShieldCheck, label: 'Secure online payment (UPI)' },
 ]
 
 export function Hero() {
@@ -47,7 +48,7 @@ export function Hero() {
             transition={{ duration: 0.65, delay: 0.16, ease: EASE }}
             className="max-w-lg text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8"
           >
-            Ayurnex Bana is an Ayurvedic vitality formula built to support stamina, drive and intimate performance — so you show up with confidence, night after night. Discreet packaging, private delivery.
+            Ayurnex Bana is an Ayurvedic vitality formula built to support stamina, drive and intimate performance — so you show up with confidence, night after night. Powerful sex drive, restored naturally. Discreet packaging, private delivery.
           </motion.p>
 
           <motion.div
@@ -78,6 +79,9 @@ export function Hero() {
               </span>
             ))}
           </div>
+          <p className="mt-3 max-w-lg text-xs leading-5 text-muted-foreground">
+            Note (for a limited time): pay securely online via UPI to confirm your order instantly.
+          </p>
         </div>
 
         <motion.div
@@ -89,8 +93,8 @@ export function Hero() {
           <div className="relative min-h-[390px] overflow-hidden bg-primary-900 sm:min-h-[510px] lg:min-h-[590px]">
             <motion.img
               style={{ y: imageY, scale: 1.12 }}
-              src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1600&q=85"
-              alt="Confident man standing tall after restoring his vitality"
+              src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=1600&q=85"
+              alt="Healthy superactive man with strong vitality"
               loading="eager"
               className="absolute inset-0 h-full w-full object-cover"
             />
