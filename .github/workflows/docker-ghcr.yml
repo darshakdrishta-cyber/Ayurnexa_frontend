@@ -1,9 +1,6 @@
 name: Build, push to GHCR and deploy
 
 on:
-  push:
-    branches: [main, master]
-    tags: ['v*']
   workflow_dispatch:
 
 env:
