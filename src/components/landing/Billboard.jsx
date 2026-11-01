@@ -5,13 +5,7 @@ import { Reveal } from '../common/Reveal'
 export function Billboard() {
   return (
     <section className="relative isolate overflow-hidden py-0">
-      <div className="relative min-h-[420px] sm:min-h-[520px]">
-        <img
-          src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=1800&q=85"
-          alt="Strong, confident man representing restored vitality after Ayurnex Bana"
-          loading="lazy"
-          className="absolute inset-0 h-full w-full object-cover"
-        />
+      <div className="relative min-h-[420px] sm:min-h-[520px] bg-gradient-to-br from-primary-900 to-primary-950">
         <div className="absolute inset-0 bg-gradient-to-r from-primary-950/85 via-primary-950/55 to-transparent" />
         <div className="container relative flex min-h-[420px] items-center sm:min-h-[520px]">
           <Reveal className="max-w-xl text-white">

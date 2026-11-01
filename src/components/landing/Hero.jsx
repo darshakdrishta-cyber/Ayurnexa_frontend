@@ -66,39 +66,6 @@ export function Hero() {
           </p>
         </div>
 
-        <motion.div
-          initial={reduce ? false : { opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.9, delay: 0.1, ease: EASE }}
-          className="relative mx-auto w-full max-w-2xl lg:max-w-none"
-        >
-          <div className="relative min-h-[390px] overflow-hidden bg-primary-900 sm:min-h-[510px] lg:min-h-[590px]">
-            <motion.img
-              style={{ y: imageY, scale: 1.12 }}
-              src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=1600&q=85"
-              alt="Healthy superactive man with strong vitality"
-              loading="eager"
-              className="absolute inset-0 h-full w-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-primary-950/70 via-primary-950/10 to-transparent" />
-            <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-primary-950/50 to-transparent" />
-
-            <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between gap-4 text-white sm:bottom-9 sm:left-9 sm:right-9">
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/75">Rooted in Ayurveda</p>
-                <p className="mt-1 font-display text-2xl font-medium sm:text-3xl">Stronger nights. Confident days.</p>
-              </div>
-              <a
-                href="#research"
-                aria-label="Scroll to research"
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/45 text-white transition hover:border-secondary-300 hover:bg-secondary-500 hover:text-primary-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
-              >
-                <ArrowDown className="h-4 w-4" />
-              </a>
-            </div>
-          </div>
-          <span className="absolute -bottom-3 left-6 h-1.5 w-20 bg-secondary-500 sm:left-9" aria-hidden="true" />
-        </motion.div>
       </div>
     </section>
   )
