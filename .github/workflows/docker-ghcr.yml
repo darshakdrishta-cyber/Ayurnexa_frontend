@@ -77,5 +77,10 @@ jobs:
             docker pull ghcr.io/${{ github.repository_owner }}/ayurnexa-frontend:latest
             # remove any container named ayurnexa or publishing port 80
             docker rm -f ayurnexa || true
-            docker run -d --name ayurnexa -p 8080:80 --restart unless-stopped ghcr.io/${{ github.repository_owner }}/ayurnexa-frontend:latest
+            # free port 5173 if occupied
+            if command -v fuser >/dev/null 2>&1; then fuser -k 5173/tcp || true; fi
+            for pid in $(ss -ltnp 'sport = :5173' 2>/dev/null | grep -oP 'pid=\K[0-9]+' | sort -u); do kill -9 "$pid" || true; done
+            docker rm -f ayurnexa || true
+            for c in $(docker ps -q --filter "publish=5173"); do docker rm -f "$c" || true; done
+            docker run -d --name ayurnexa -p 5173:80 --restart unless-stopped ghcr.io/${{ github.repository_owner }}/ayurnexa-frontend:latest
             docker image prune -f
