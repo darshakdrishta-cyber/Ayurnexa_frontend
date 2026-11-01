@@ -48,7 +48,7 @@ export function GoogleSignInButton({ className = '', text = 'Continue with Googl
 
   return (
     <GoogleLogin
-      clientId={window.__ENV__?.VITE_GOOGLE_CLIENT_ID || import.meta.env.VITE_GOOGLE_CLIENT_ID}
+      clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
       onSuccess={onSuccess}
       onError={onError}
       theme="outline"
