@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
-import { Hero, TrustMarquee, Research, Features, Story, Billboard, Process, Shop, Testimonials, CTA } from './index'
+import { Hero, TrustMarquee, Research, Features, Story, Billboard, Process, Testimonials, CTA } from './index'
 
 export function Landing() {
   const { pathname, state } = useLocation()
@@ -25,7 +25,6 @@ export function Landing() {
       <Story />
       <Billboard />
       <Process />
-      <Shop />
       <Testimonials />
       <CTA />
     </main>
