@@ -50,3 +50,9 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            VITE_API_BASE_URL=${{ vars.VITE_API_BASE_URL }}
+            VITE_API_KEY=${{ secrets.VITE_API_KEY }}
+            VITE_APP_NAME=${{ vars.VITE_APP_NAME }}
+            VITE_GOOGLE_CLIENT_ID=${{ vars.VITE_GOOGLE_CLIENT_ID }}
+            VITE_RAZORPAY_KEY_ID=${{ vars.VITE_RAZORPAY_KEY_ID }}
