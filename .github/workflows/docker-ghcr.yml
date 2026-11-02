@@ -82,23 +82,4 @@ jobs:
             for pid in $(ss -ltnp 'sport = :5173' 2>/dev/null | grep -oP 'pid=\K[0-9]+' | sort -u); do kill -9 "$pid" || true; done
             docker rm -f ayurnexa || true
             for c in $(docker ps -q --filter "publish=5173"); do docker rm -f "$c" || true; done
-            # Generate env.js on host from server env file (if it exists)
-            if [ -f /opt/ayurnexfrontend/.env ]; then
-              set -a
-              . /opt/ayurnexfrontend/.env
-              set +a
-              {
-                echo "window.__ENV__ = {"
-                echo "  VITE_API_BASE_URL: "$VITE_API_BASE_URL","
-                echo "  VITE_API_KEY: "$VITE_API_KEY","
-                echo "  VITE_APP_NAME: "$VITE_APP_NAME","
-                echo "  VITE_GOOGLE_CLIENT_ID: "$VITE_GOOGLE_CLIENT_ID","
-                echo "  VITE_RAZORPAY_KEY_ID: "$VITE_RAZORPAY_KEY_ID","
-                echo "};"
-              } > /tmp/env.js
-              docker cp /tmp/env.js ayurnexa:/usr/share/nginx/html/env.js 2>/dev/null || true
-            fi
-            docker run -d --name ayurnexa \
-              --mount type=bind,source=/tmp/env.js,target=/usr/share/nginx/html/env.js,readonly \
-              -p 5173:80 --restart unless-stopped ghcr.io/${{ github.repository_owner }}/ayurnexa-frontend:latest
             docker image prune -f
