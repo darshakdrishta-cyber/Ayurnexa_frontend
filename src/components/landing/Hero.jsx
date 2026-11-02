@@ -9,7 +9,7 @@ const TRUST_POINTS = [
   { icon: PackageCheck, label: 'Batch-tested formula' },
   { icon: ShieldCheck, label: 'Discreet packaging' },
   { icon: Zap, label: 'Fast-acting vitality support' },
-  { icon: ShieldCheck, label: 'Secure online payment (UPI)' },
+  { icon: ShieldCheck, label: 'Cash on delivery available' },
 ]
 
 export function Hero() {
@@ -62,7 +62,7 @@ export function Hero() {
             ))}
           </div>
           <p className="mt-3 max-w-lg text-xs leading-5 text-muted-foreground">
-            Note (for a limited time): pay securely online via UPI to confirm your order instantly.
+            Online payments via Razorpay are coming soon. Cash on delivery is available at checkout.
           </p>
         </div>
 
@@ -72,7 +72,7 @@ export function Hero() {
 }
 
 export function TrustMarquee() {
-  const items = ['Ayurnex Bana', 'Stamina', 'Vitality', 'Confidence', 'Discreet delivery', 'Batch tested', 'UPI or COD']
+  const items = ['Ayurnex Bana', 'Stamina', 'Vitality', 'Confidence', 'Discreet delivery', 'Batch tested', 'Cash on delivery']
   const doubled = [...items, ...items]
 
   return (

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { Leaf, Mail, Phone, MapPin } from 'lucide-react'
 import { ThemeToggle } from './ThemeToggle'
 import { Reveal } from './Reveal'
+import { useAppSelector } from '../../hooks/redux'
 
 const COLUMNS = [
   {
@@ -25,6 +26,9 @@ const COLUMNS = [
 ]
 
 export default function Footer() {
+  const { user, token } = useAppSelector((state) => state.auth)
+  const isAuthenticated = Boolean(user || token)
+
   return (
     <footer className="relative mt-24 overflow-hidden border-t border-border bg-card">
       <div
@@ -52,25 +56,27 @@ export default function Footer() {
             <h3 className="text-xs font-extrabold uppercase tracking-[0.16em] text-secondary-600 dark:text-secondary-400">
               {col.title}
             </h3>
-            {col.links.map((link) =>
-              link.hash ? (
-                <a
-                  key={link.label}
-                  href={`/#${link.hash}`}
-                  className="w-fit text-sm text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  {link.label}
-                </a>
-              ) : (
-                <Link
-                  key={link.label}
-                  to={link.to}
-                  className="w-fit text-sm text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  {link.label}
-                </Link>
-              )
-            )}
+            {col.links
+              .filter((link) => !isAuthenticated || link.to !== '/login')
+              .map((link) =>
+                link.hash ? (
+                  <a
+                    key={link.label}
+                    href={`/#${link.hash}`}
+                    className="w-fit text-sm text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    {link.label}
+                  </a>
+                ) : (
+                  <Link
+                    key={link.label}
+                    to={link.to}
+                    className="w-fit text-sm text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    {link.label}
+                  </Link>
+                )
+              )}
           </nav>
         ))}
 

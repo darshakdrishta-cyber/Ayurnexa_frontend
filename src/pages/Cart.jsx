@@ -15,16 +15,12 @@ import {
   Package,
 } from 'lucide-react'
 import { Button, LinkButton } from '../components/common/Button'
-import { Card } from '../components/common/Card'
+import { Badge, Card } from '../components/common/Card'
 import { Reveal } from '../components/common/Reveal'
 import { ProductImage } from '../components/common/ProductImage'
 import { useCart } from '../context/CartContext'
 import { useAppDispatch, useAppSelector } from '../hooks/redux'
-import {
-  createCodPaymentThunk,
-  createUpiPaymentThunk,
-  newIdempotencyKey,
-} from '../store/slices/paymentSlice'
+import { createCodPaymentThunk, newIdempotencyKey } from '../store/slices/paymentSlice'
 import { createOrderThunk } from '../store/slices/orderSlice'
 import { apiErrorMessage } from '../services/api'
 
@@ -32,17 +28,15 @@ const DELIVERY_FEE = 0
 
 export default function CartPage() {
   const { items, updateQty, remove, clear, subtotal, count } = useCart()
-  const { user } = useAppSelector((state) => state.auth)
+  const { user, token } = useAppSelector((state) => state.auth)
+  const isAuthenticated = Boolean(user || token)
   const navigate = useNavigate()
   const location = useLocation()
   const dispatch = useAppDispatch()
 
-  const [method, setMethod] = useState('COD')
-  const [phone, setPhone] = useState('')
   const [status, setStatus] = useState({
     state: 'idle',
     message: '',
-    link: '',
     orderId: '',
     deliveryDate: '',
   })
@@ -52,45 +46,18 @@ export default function CartPage() {
   const checkout = async () => {
     if (!items.length) return
 
-    if (!user) {
+    if (!isAuthenticated) {
       navigate('/login', { state: { from: location.pathname } })
       return
     }
 
-    setStatus({ state: 'loading', message: '', link: '', orderId: '', deliveryDate: '' })
+    setStatus({ state: 'loading', message: '', orderId: '', deliveryDate: '' })
     const idempotencyKey = newIdempotencyKey('checkout')
 
     try {
-      let payment
-
-      if (method === 'COD') {
-        payment = await dispatch(
-          createCodPaymentThunk({ amount: total, idempotencyKey })
-        ).unwrap()
-      } else {
-        const contact = phone.trim() || user.phone || user.phoneVerified || '+919999999999'
-        payment = await dispatch(
-          createUpiPaymentThunk({
-            amount: total,
-            customerName: user.username || user.name || user.email || 'Customer',
-            customerEmail: user.email,
-            customerContact: contact,
-            idempotencyKey,
-          })
-        ).unwrap()
-      }
-
-      if (method === 'UPI' && payment?.paymentLinkUrl) {
-        setStatus({
-          state: 'link',
-          message: 'UPI payment link created! Please complete payment to confirm your order.',
-          link: payment.paymentLinkUrl,
-          orderId: '',
-          deliveryDate: '',
-        })
-        window.open(payment.paymentLinkUrl, '_blank', 'noopener,noreferrer')
-        return
-      }
+      const payment = await dispatch(
+        createCodPaymentThunk({ amount: total, idempotencyKey })
+      ).unwrap()
 
       const paymentId =
         payment?.id || payment?.paymentRecordId || payment?.paymentId || payment?._id
@@ -111,14 +78,13 @@ export default function CartPage() {
         message: `Your order has been confirmed successfully!`,
         orderId: String(orderId),
         deliveryDate: expectedDeliveryDate,
-        link: '',
       })
     } catch (error) {
       const msg =
         typeof error === 'string'
           ? error
           : apiErrorMessage(error, 'Checkout failed. Please try again.')
-      setStatus({ state: 'error', message: msg, link: '', orderId: '', deliveryDate: '' })
+      setStatus({ state: 'error', message: msg, orderId: '', deliveryDate: '' })
     }
   }
 
@@ -321,27 +287,33 @@ export default function CartPage() {
                   icon: Truck,
                   title: 'Cash on delivery',
                   desc: 'Pay cash when package arrives at your doorstep',
+                  selected: true,
                 },
                 {
                   id: 'UPI',
                   icon: BadgeIndianRupee,
-                  title: 'UPI payment link',
-                  desc: 'Razorpay secure link via GPay / PhonePe / Paytm',
+                  title: 'UPI / Razorpay',
+                  desc: 'Online payments are not available yet',
+                  disabled: true,
+                  comingSoon: true,
                 },
               ].map((opt) => (
                 <button
                   key={opt.id}
-                  onClick={() => setMethod(opt.id)}
-                  aria-pressed={method === opt.id}
+                  type="button"
+                  disabled={opt.disabled}
+                  aria-pressed={opt.selected || false}
                   className={`flex w-full items-center gap-3 rounded-2xl border px-4 py-3 text-left transition ${
-                    method === opt.id
+                    opt.selected
                       ? 'border-primary-500 bg-primary-50/70 dark:bg-primary-950/50'
+                      : opt.disabled
+                      ? 'cursor-not-allowed border-border opacity-60'
                       : 'border-border hover:border-primary-200 dark:hover:border-primary-800'
                   }`}
                 >
                   <span
                     className={`flex h-9 w-9 items-center justify-center rounded-xl ${
-                      method === opt.id
+                      opt.selected
                         ? 'bg-primary-600 text-white'
                         : 'bg-muted text-muted-foreground'
                     }`}
@@ -349,12 +321,15 @@ export default function CartPage() {
                     <opt.icon className="h-4.5 w-4.5" />
                   </span>
                   <span className="flex-1">
-                    <span className="block text-sm font-bold text-foreground">{opt.title}</span>
+                    <span className="flex flex-wrap items-center gap-2">
+                      <span className="text-sm font-bold text-foreground">{opt.title}</span>
+                      {opt.comingSoon && <Badge variant="outline">Coming soon</Badge>}
+                    </span>
                     <span className="block text-xs text-muted-foreground">{opt.desc}</span>
                   </span>
                   <span
                     className={`h-4 w-4 rounded-full border-2 ${
-                      method === opt.id
+                      opt.selected
                         ? 'border-primary-600 bg-primary-600'
                         : 'border-border'
                     }`}
@@ -362,26 +337,6 @@ export default function CartPage() {
                 </button>
               ))}
             </div>
-
-            {/* Optional contact input for delivery updates if user doesn't have phone */}
-            {user && (
-              <div className="mt-4">
-                <label
-                  htmlFor="delivery-phone"
-                  className="block text-xs font-semibold text-muted-foreground mb-1.5"
-                >
-                  Contact number for delivery (optional)
-                </label>
-                <input
-                  id="delivery-phone"
-                  type="tel"
-                  placeholder={user.phone || '+91 98765 43210'}
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="h-10 w-full rounded-xl border border-border bg-background px-3 text-xs text-foreground placeholder:text-muted-foreground/60 focus:border-primary-500 focus:outline-none"
-                />
-              </div>
-            )}
 
             {/* Status alerts */}
             {status.state !== 'idle' && status.message && (
@@ -395,16 +350,6 @@ export default function CartPage() {
                 }`}
               >
                 <p>{status.message}</p>
-                {status.link && (
-                  <a
-                    href={status.link}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-2 inline-flex items-center gap-1 font-bold underline"
-                  >
-                    Open Razorpay payment link →
-                  </a>
-                )}
               </motion.div>
             )}
 
@@ -416,11 +361,9 @@ export default function CartPage() {
             >
               {status.state === 'loading'
                 ? 'Processing…'
-                : !user
+                : !isAuthenticated
                 ? 'Sign in to checkout'
-                : method === 'COD'
-                ? `Place order (COD) · ₹${total}`
-                : `Pay with UPI · ₹${total}`}
+                : `Place order (COD) · ₹${total}`}
               <ArrowRight className="h-4 w-4" />
             </Button>
 

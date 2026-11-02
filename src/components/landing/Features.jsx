@@ -28,7 +28,7 @@ const ITEMS = [
     icon: ShieldCheck,
     number: '04',
     title: 'Discreet delivery',
-    desc: 'Plain packaging, UPI or COD, and private tracking from order to doorstep.',
+    desc: 'Plain packaging, cash on delivery, and private tracking from order to doorstep.',
     href: '/login',
   },
 ]
@@ -39,7 +39,7 @@ export function Features() {
       <SectionHeading
         eyebrow="Why Ayurnex Bana"
         title="Energy, drive and confidence — restored"
-        description="A clear, private path from low vitality to your best self. Browse, pay your way, and track discreetly."
+        description="A clear, private path from low vitality to your best self. Browse, order with cash on delivery, and track discreetly."
       />
 
       <div className="mt-14 grid gap-x-8 sm:grid-cols-2 lg:grid-cols-4">
