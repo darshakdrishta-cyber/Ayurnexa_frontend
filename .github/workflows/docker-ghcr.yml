@@ -83,7 +83,7 @@ jobs:
             docker rm -f ayurnexa || true
             for c in $(docker ps -q --filter "publish=5173"); do docker rm -f "$c" || true; done
             set -a
-            . ayurnexfrontend/.env
+            . /opt/ayurnexfrontend/.env
             set +a
             docker run -d --name ayurnexa \
               -e VITE_API_BASE_URL="$VITE_API_BASE_URL" \
