@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { appConfig } from '../config'
 import { logError } from '../utils/errorLog'
 
 export const TOKEN_KEY = 'Ayurnexa-token_009'
@@ -85,8 +86,8 @@ export function removeStoredUser() {
   } catch {}
 }
 
-const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api'
-const apiKey = import.meta.env.VITE_API_KEY || 'dev_api_key'
+const baseURL = appConfig.apiBaseUrl
+const apiKey = appConfig.apiKey
 
 const api = axios.create({
   baseURL,

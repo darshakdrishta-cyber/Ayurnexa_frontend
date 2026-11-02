@@ -1,4 +1,5 @@
 import { GoogleLogin } from '@react-oauth/google'
+import { appConfig } from '../../config'
 import { useAppDispatch } from '../../hooks/redux'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { googleLoginUser, setCredentials } from '../../store/slices/authSlice'
@@ -48,7 +49,7 @@ export function GoogleSignInButton({ className = '', text = 'Continue with Googl
 
   return (
     <GoogleLogin
-      clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
+      clientId={appConfig.googleClientId}
       onSuccess={onSuccess}
       onError={onError}
       theme="outline"

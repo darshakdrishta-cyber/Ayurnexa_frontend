@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { GoogleOAuthProvider } from '@react-oauth/google'
+import { appConfig } from './config'
 import { store } from './store'
 import { ThemeProvider } from './context/ThemeContext'
 import { AuthProvider } from './context/AuthContext'
@@ -132,7 +133,7 @@ function App() {
       <ThemeProvider>
         <AuthProvider>
           <CartProvider>
-            <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+            <GoogleOAuthProvider clientId={appConfig.googleClientId}>
               <AppShell />
             </GoogleOAuthProvider>
           </CartProvider>
