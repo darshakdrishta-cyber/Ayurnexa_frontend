@@ -13,7 +13,6 @@ env:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    environment: frontend1
     permissions:
       contents: read
       packages: write
@@ -61,7 +60,6 @@ jobs:
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
-    environment: frontend1
     steps:
       - name: Deploy to server via SSH
         uses: appleboy/ssh-action@v1.2.0
