@@ -63,7 +63,7 @@ function AuthBootstrap() {
   }, [location.pathname])
 
   useEffect(() => {
-    // Probes session on mount: validates token or checks server HttpOnly cookie
+    // Validate the stored bearer token on mount.
     dispatch(fetchMe())
       .unwrap()
       .then((meData) => {

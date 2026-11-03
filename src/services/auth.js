@@ -82,7 +82,7 @@ export function normalizeUser(raw) {
 }
 
 /**
- * Extracts token & user from various API response shapes (bearer JWT or HttpOnly cookie responses).
+ * Extracts token and user from supported API response shapes.
  */
 export function extractAuthData(data) {
   if (!data) return { token: null, user: null, raw: null }
