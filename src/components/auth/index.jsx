@@ -102,7 +102,7 @@ export function Signup() {
       }
     >
       <div className="mt-10 space-y-3">
-        <GoogleSignInButton className="w-full" text="Sign up with Google" />
+        <GoogleSignInButton className="w-full" text="signup_with" />
         <p className="relative text-xs text-muted-foreground">
           <span className="relative flex h-5 w-full items-center border-t border-border">
             <span className="relative -top-[0.7em] bg-background px-2 text-sm">Continue with Google</span>

@@ -18,6 +18,7 @@ import AdminLayout from './components/admin/AdminLayout'
 import { AdminOrders } from './components/admin/OrdersPage'
 import { AdminProducts } from './components/admin/ProductsPage'
 import { AddProductForm } from './components/admin/AddProductForm'
+import { isAdminUser } from './services/auth'
 import { useAppDispatch, useAppSelector } from './hooks/redux'
 import { fetchMe } from './store/slices/authSlice'
 
@@ -46,14 +47,9 @@ function AuthRequired({ children }) {
 function AdminRequired({ children }) {
   const { user, token, loading } = useAppSelector((state) => state.auth)
   const isAuthenticated = Boolean(user || token)
-  if (loading && !isAuthenticated) return null
+  if (loading) return null
   if (!isAuthenticated) return <Navigate to="/login" replace />
-  const isAdmin =
-    user?.role === 'ADMIN' ||
-    user?.role === 'ROLE_ADMIN' ||
-    user?.roles?.includes('ROLE_ADMIN') ||
-    user?.roles?.includes('ADMIN')
-  return isAdmin ? children : <Navigate to="/" replace />
+  return isAdminUser(user) ? children : <Navigate to="/" replace />
 }
 
 function AuthBootstrap() {

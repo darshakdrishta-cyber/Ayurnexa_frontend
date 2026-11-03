@@ -17,12 +17,12 @@ export function AddProductForm() {
   const { upload } = useAppSelector((state) => state.products)
   const [file, setFile] = useState(null)
   const [preview, setPreview] = useState(null)
+  const [submitError, setSubmitError] = useState('')
 
   const {
     register,
     handleSubmit,
-    setValue,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
       productName: '',
@@ -37,25 +37,37 @@ export function AddProductForm() {
   })
 
   const onSubmit = async (data) => {
-    if (file) {
-      const res = await dispatch(uploadImageThunk(file))
-      if (uploadImageThunk.fulfilled.match(res)) {
-        setValue('productImage', res.payload.url)
+    setSubmitError('')
+
+    try {
+      let productImage = data.productImage
+      if (file) {
+        const uploadedImage = await dispatch(uploadImageThunk(file)).unwrap()
+        if (!uploadedImage?.url) {
+          throw new Error('Image upload did not return an image URL.')
+        }
+        productImage = uploadedImage.url
       }
-    }
-    const payload = {
-      productName: data.productName,
-      productDescription: data.productDescription,
-      productCategory: data.productCategory,
-      productWeight: data.productWeight,
-      form: data.form,
-      productImage: data.productImage,
-      isActive: data.isActive,
-      productPrice: Number(data.productPrice),
-    }
-    const res = await dispatch(createProductThunk({ payload }))
-    if (createProductThunk.fulfilled.match(res)) {
+
+      const payload = {
+        productName: data.productName,
+        productDescription: data.productDescription,
+        productCategory: data.productCategory,
+        productWeight: data.productWeight,
+        form: data.form,
+        productImage,
+        isActive: data.isActive,
+        productPrice: Number(data.productPrice),
+      }
+
+      await dispatch(createProductThunk({ payload })).unwrap()
       navigate('/admin/products')
+    } catch (error) {
+      setSubmitError(
+        typeof error === 'string'
+          ? error
+          : error?.message || 'Could not save the product. Please try again.'
+      )
     }
   }
 
@@ -88,7 +100,7 @@ export function AddProductForm() {
             <div className="space-y-2">
               <label className="block text-sm font-semibold text-foreground">Product name</label>
               <input
-                {...register('productName')}
+                {...register('productName', { required: 'Product name is required.' })}
                 placeholder="e.g. Shilajit Gold Oil"
                 className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500"
               />
@@ -131,8 +143,14 @@ export function AddProductForm() {
             <div className="space-y-2">
               <label className="block text-sm font-semibold text-foreground">Price (₹)</label>
               <input
-                {...register('productPrice')}
+                {...register('productPrice', {
+                  required: 'Price is required.',
+                  valueAsNumber: true,
+                  min: { value: 0.01, message: 'Price must be greater than zero.' },
+                })}
                 type="number"
+                min="0.01"
+                step="0.01"
                 placeholder="0.00"
                 className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500"
               />
@@ -216,11 +234,16 @@ export function AddProductForm() {
               </ul>
             </div>
           </div>
-          <Button type="submit" size="lg" className="w-full md:w-auto" disabled={upload.loading}>
-            {upload.loading ? 'Uploading image…' : 'Save product'}
+          <Button type="submit" size="lg" className="w-full md:w-auto" disabled={isSubmitting || upload.loading}>
+            {isSubmitting ? 'Saving product…' : upload.loading ? 'Uploading image…' : 'Save product'}
             <Plus className="h-4 w-4" />
           </Button>
         </div>
+        {submitError && (
+          <p role="alert" className="rounded-xl border border-destructive/25 bg-destructive-50 px-4 py-3 text-sm text-destructive dark:bg-destructive-950/40">
+            {submitError}
+          </p>
+        )}
       </form>
     </div>
   )

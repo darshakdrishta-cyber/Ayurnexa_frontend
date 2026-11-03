@@ -52,6 +52,7 @@ function AdminLayout({ children }) {
                 <NavLink
                   key={item.label}
                   to={item.to}
+                  end={item.to === '/admin'}
                   className={({ isActive: active }) =>
                     `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
                       active

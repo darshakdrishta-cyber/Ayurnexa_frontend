@@ -20,6 +20,32 @@ export {
   removeStoredUser,
 }
 
+function normalizeRoleName(role) {
+  const value =
+    typeof role === 'string'
+      ? role
+      : role && typeof role === 'object'
+        ? role.authority || role.role || role.name
+        : ''
+  return typeof value === 'string' ? value.trim().toUpperCase().replace(/^ROLE_/, '') : ''
+}
+
+export function isAdminUser(user) {
+  if (!user || typeof user !== 'object') return false
+
+  const roles = [
+    user.role,
+    ...(Array.isArray(user.roles) ? user.roles : user.roles ? [user.roles] : []),
+    ...(Array.isArray(user.authorities)
+      ? user.authorities
+      : user.authorities
+        ? [user.authorities]
+        : []),
+  ]
+
+  return roles.some((role) => normalizeRoleName(role) === 'ADMIN')
+}
+
 /**
  * Normalizes user object to ensure consistent structure across all endpoints.
  */
@@ -28,13 +54,18 @@ export function normalizeUser(raw) {
   const user = raw.user || raw.data?.user || raw
   if (!user || typeof user !== 'object') return null
 
-  const role =
-    user.role ||
-    (Array.isArray(user.roles)
-      ? user.roles.includes('ROLE_ADMIN') || user.roles.includes('ADMIN')
-        ? 'ADMIN'
-        : user.roles[0]
-      : 'USER')
+  const roleCandidates = [
+    user.role,
+    ...(Array.isArray(user.roles) ? user.roles : user.roles ? [user.roles] : []),
+    ...(Array.isArray(user.authorities)
+      ? user.authorities
+      : user.authorities
+        ? [user.authorities]
+        : []),
+  ]
+  const role = isAdminUser(user)
+    ? 'ADMIN'
+    : roleCandidates.map(normalizeRoleName).find(Boolean) || 'USER'
 
   return {
     ...user,
@@ -42,10 +73,10 @@ export function normalizeUser(raw) {
     userId: user.userId || user.id || user._id,
     username: user.username || user.name || (user.email ? user.email.split('@')[0] : 'User'),
     email: user.email || '',
-    role: role === 'ROLE_ADMIN' ? 'ADMIN' : role === 'ROLE_USER' ? 'USER' : role,
+    role,
     roles: Array.isArray(user.roles)
       ? user.roles
-      : [role === 'ADMIN' ? 'ROLE_ADMIN' : 'ROLE_USER'],
+      : [role === 'ADMIN' ? 'ROLE_ADMIN' : `ROLE_${role}`],
     picture: user.picture || user.avatar || user.image || null,
   }
 }

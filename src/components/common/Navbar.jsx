@@ -16,6 +16,7 @@ import { ThemeToggle } from './ThemeToggle'
 import { useAppDispatch, useAppSelector } from '../../hooks/redux'
 import logo from '../../assets/AyurnexaWebsiteLogo.png'
 import { useCart } from '../../context/CartContext'
+import { isAdminUser } from '../../services/auth'
 import { logoutUser } from '../../store/slices/authSlice'
 
 const NAV_LINKS = [
@@ -40,11 +41,7 @@ export function Navbar() {
   const cartRef = useRef(null)
 
   const isAuthenticated = Boolean(user || token)
-  const isAdmin =
-    user?.role === 'ADMIN' ||
-    user?.role === 'ROLE_ADMIN' ||
-    user?.roles?.includes('ROLE_ADMIN') ||
-    user?.roles?.includes('ADMIN')
+  const isAdmin = isAdminUser(user)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12)
@@ -144,7 +141,7 @@ export function Navbar() {
               )
             )}
             {isAdmin && (
-              <NavLink to="/admin" className={linkClass}>
+              <NavLink to="/admin/products" className={linkClass}>
                 {({ isActive }) => (
                   <>
                     Admin
@@ -271,13 +268,10 @@ export function Navbar() {
             </div>
 
             {!isAuthenticated ? (
-              /* When NOT signed in: show Sign In and Get Started buttons */
+              /* Show the sign-in action only for guests. */
               <div className="hidden items-center gap-2 sm:flex">
                 <LinkButton to="/login" variant="ghost" size="sm">
                   Sign in
-                </LinkButton>
-                <LinkButton to="/signup" size="sm" className="shadow-none">
-                  Get started
                 </LinkButton>
               </div>
             ) : (
@@ -387,7 +381,7 @@ export function Navbar() {
                             <button
                               onClick={() => {
                                 setMenuOpen(false)
-                                navigate('/admin')
+                                navigate('/admin/products')
                               }}
                               className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium text-foreground transition hover:bg-muted"
                             >
@@ -489,7 +483,7 @@ export function Navbar() {
 
                 {isAdmin && (
                   <NavLink
-                    to="/admin"
+                    to="/admin/products"
                     className={({ isActive }) =>
                       `rounded-xl px-3 py-3 text-[15px] font-semibold transition hover:bg-muted ${
                         isActive
@@ -527,14 +521,9 @@ export function Navbar() {
 
                 <div className="mt-3 flex flex-col gap-2 border-t border-border pt-4">
                   {!isAuthenticated ? (
-                    <>
-                      <LinkButton to="/login" variant="outline" className="w-full">
-                        Sign in
-                      </LinkButton>
-                      <LinkButton to="/signup" className="w-full">
-                        Get started
-                      </LinkButton>
-                    </>
+                    <LinkButton to="/login" variant="outline" className="w-full">
+                      Sign in
+                    </LinkButton>
                   ) : (
                     <Button
                       variant="outline"
