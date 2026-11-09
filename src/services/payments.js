@@ -14,19 +14,40 @@ export async function createCodPayment(amount, idempotencyKey = newIdempotencyKe
   return data
 }
 
-/** POST /api/payments — create a PayU UPI payment link. */
-export async function createUpiPayment(amount, idempotencyKey = newIdempotencyKey('upi')) {
+/**
+ * POST /api/payments — create a PayU UPI payment link.
+ * Request body: { amount, paymentMethod: "UPI", idempotencyKey }
+ * Response contains paymentLinkUrl and payment record id.
+ */
+export async function createUpiPayment(amountOrPayload, maybeIdempotencyKey) {
+  let amount
+  let idempotencyKey
+
+  if (typeof amountOrPayload === 'object' && amountOrPayload !== null) {
+    amount = amountOrPayload.amount
+    idempotencyKey = amountOrPayload.idempotencyKey || newIdempotencyKey('payu')
+  } else {
+    amount = amountOrPayload
+    idempotencyKey = maybeIdempotencyKey || newIdempotencyKey('payu')
+  }
+
   const { data } = await api.post('/payments', {
-    amount,
+    amount: Number(amount),
     paymentMethod: 'UPI',
     idempotencyKey,
   })
   return data
 }
 
-/** POST /api/payments/{paymentRecordId}/verify — verify a completed PayU checkout. */
+/**
+ * POST /api/payments/{paymentRecordId}/verify — verify a completed PayU checkout.
+ */
 export async function verifyPayment(paymentRecordId) {
-  const { data } = await api.post(`/payments/${paymentRecordId}/verify`)
+  const id =
+    typeof paymentRecordId === 'object' && paymentRecordId !== null
+      ? paymentRecordId.paymentRecordId || paymentRecordId.id || paymentRecordId.paymentId
+      : paymentRecordId
+  const { data } = await api.post(`/payments/${id}/verify`)
   return data
 }
 

@@ -31,7 +31,9 @@ export const createUpiPaymentThunk = createAsyncThunk(
       const data = await createUpiPayment(amount, idempotencyKey)
       return data
     } catch (error) {
-      return rejectWithValue(error?.response?.data?.message || 'UPI payment failed')
+      return rejectWithValue(
+        error?.response?.data?.message || error?.response?.data?.error || 'PayU UPI payment failed'
+      )
     }
   }
 )
@@ -40,21 +42,27 @@ export const verifyPaymentThunk = createAsyncThunk(
   'payments/verifyPayment',
   async (paymentRecordId, { rejectWithValue }) => {
     try {
-      return await verifyPayment(paymentRecordId)
+      const data = await verifyPayment(paymentRecordId)
+      return data
     } catch (error) {
-      return rejectWithValue(error?.response?.data?.message || 'Payment verification failed')
+      return rejectWithValue(
+        error?.response?.data?.message || error?.response?.data?.error || 'PayU payment verification failed'
+      )
     }
   }
 )
 
-export const fetchPayments = createAsyncThunk('payments/fetchPayments', async (_, { rejectWithValue }) => {
-  try {
-    const data = await listPayments()
-    return data
-  } catch (error) {
-    return rejectWithValue(error?.response?.data?.message || 'Failed to load payments')
+export const fetchPayments = createAsyncThunk(
+  'payments/fetchPayments',
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await listPayments()
+      return data
+    } catch (error) {
+      return rejectWithValue(error?.response?.data?.message || 'Failed to load payments')
+    }
   }
-})
+)
 
 export const fetchPayment = createAsyncThunk(
   'payments/fetchPayment',
@@ -112,6 +120,7 @@ const paymentSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // COD
       .addCase(createCodPaymentThunk.pending, (state) => {
         state.loading = true
         state.error = null
@@ -125,6 +134,8 @@ const paymentSlice = createSlice({
         state.loading = false
         state.error = action.payload
       })
+
+      // PayU UPI
       .addCase(createUpiPaymentThunk.pending, (state) => {
         state.loading = true
         state.error = null
@@ -138,6 +149,32 @@ const paymentSlice = createSlice({
         state.loading = false
         state.error = action.payload
       })
+
+      // PayU Verify
+      .addCase(verifyPaymentThunk.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(verifyPaymentThunk.fulfilled, (state, action) => {
+        state.loading = false
+        state.payment = action.payload
+        const verifiedId =
+          action.payload?.id || action.payload?.paymentRecordId || action.payload?.paymentId
+        if (verifiedId) {
+          const index = state.payments.findIndex(
+            (p) => (p.id || p.paymentRecordId) === verifiedId
+          )
+          if (index !== -1) {
+            state.payments[index] = { ...state.payments[index], ...action.payload }
+          }
+        }
+      })
+      .addCase(verifyPaymentThunk.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.payload
+      })
+
+      // Fetch list / single
       .addCase(fetchPayments.fulfilled, (state, action) => {
         state.payments = action.payload
       })
