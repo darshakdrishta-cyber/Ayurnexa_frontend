@@ -12,7 +12,7 @@ const STEPS = [
     icon: PackageCheck,
     step: '02',
     title: 'Pay your way',
-    desc: 'Online payments via Razorpay are coming soon. Cash on delivery is available now.',
+    desc: 'Pay securely online with PayU or choose cash on delivery.',
   },
   {
     icon: Truck,
@@ -29,7 +29,7 @@ export function Process() {
         <SectionHeading
           eyebrow="How it works"
           title="Three steps to renewed vitality"
-          description="Choose Ayurnex Bana, place your order with cash on delivery, and track it discreetly."
+          description="Choose Ayurnex Bana, pay securely with PayU or cash on delivery, and track it discreetly."
         />
 
         <div className="relative mt-14 grid gap-6 md:grid-cols-3">

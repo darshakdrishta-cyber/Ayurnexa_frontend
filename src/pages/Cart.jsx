@@ -15,12 +15,17 @@ import {
   Package,
 } from 'lucide-react'
 import { Button, LinkButton } from '../components/common/Button'
-import { Badge, Card } from '../components/common/Card'
+import { Card } from '../components/common/Card'
 import { Reveal } from '../components/common/Reveal'
 import { ProductImage } from '../components/common/ProductImage'
 import { useCart } from '../context/CartContext'
 import { useAppDispatch, useAppSelector } from '../hooks/redux'
-import { createCodPaymentThunk, newIdempotencyKey } from '../store/slices/paymentSlice'
+import {
+  createCodPaymentThunk,
+  createUpiPaymentThunk,
+  verifyPaymentThunk,
+  newIdempotencyKey,
+} from '../store/slices/paymentSlice'
 import { createOrderThunk } from '../store/slices/orderSlice'
 import { apiErrorMessage } from '../services/api'
 
@@ -33,15 +38,40 @@ export default function CartPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const dispatch = useAppDispatch()
+  const [paymentMethod, setPaymentMethod] = useState('COD')
 
   const [status, setStatus] = useState({
     state: 'idle',
     message: '',
     orderId: '',
     deliveryDate: '',
+    paymentRecordId: '',
+    paymentLinkUrl: '',
   })
 
   const total = subtotal + DELIVERY_FEE
+
+  const placeOrder = async (paymentId) => {
+    const expectedDeliveryDate = new Date(Date.now() + 5 * 864e5).toISOString().slice(0, 10)
+    const order = await dispatch(
+      createOrderThunk({
+        paymentId,
+        expectedDeliveryDate,
+        items: items.map((i) => ({ productId: String(i.id), quantity: i.qty })),
+      })
+    ).unwrap()
+
+    const orderId = order?.orderId || order?.id || order?._id || 'CONFIRMED'
+    clear()
+    setStatus({
+      state: 'success',
+      message: 'Your order has been confirmed successfully!',
+      orderId: String(orderId),
+      deliveryDate: expectedDeliveryDate,
+      paymentRecordId: '',
+      paymentLinkUrl: '',
+    })
+  }
 
   const checkout = async () => {
     if (!items.length) return
@@ -55,36 +85,93 @@ export default function CartPage() {
     const idempotencyKey = newIdempotencyKey('checkout')
 
     try {
+      if (paymentMethod === 'UPI') {
+        const payment = await dispatch(
+          createUpiPaymentThunk({ amount: total, idempotencyKey })
+        ).unwrap()
+        const paymentRecordId =
+          payment?.id || payment?.paymentRecordId || payment?.paymentId || payment?._id
+        const paymentLinkUrl = payment?.paymentLinkUrl
+
+        if (!paymentRecordId || !paymentLinkUrl) {
+          throw new Error('PayU did not return a payment link and payment record.')
+        }
+
+        let parsedPaymentLink
+        try {
+          parsedPaymentLink = new URL(paymentLinkUrl)
+        } catch {
+          throw new Error('PayU returned an invalid payment link.')
+        }
+        if (parsedPaymentLink.protocol !== 'https:' && parsedPaymentLink.protocol !== 'http:') {
+          throw new Error('PayU returned an unsupported payment link.')
+        }
+
+        setStatus({
+          state: 'payment_pending',
+          message: 'Your secure PayU payment link is ready. Complete payment, then verify it here.',
+          orderId: '',
+          deliveryDate: '',
+          paymentRecordId: String(paymentRecordId),
+          paymentLinkUrl: parsedPaymentLink.href,
+        })
+        return
+      }
+
       const payment = await dispatch(
         createCodPaymentThunk({ amount: total, idempotencyKey })
       ).unwrap()
-
       const paymentId =
         payment?.id || payment?.paymentRecordId || payment?.paymentId || payment?._id
-      const expectedDeliveryDate = new Date(Date.now() + 5 * 864e5).toISOString().slice(0, 10)
-
-      const order = await dispatch(
-        createOrderThunk({
-          paymentId,
-          expectedDeliveryDate,
-          items: items.map((i) => ({ productId: String(i.id), quantity: i.qty })),
-        })
-      ).unwrap()
-
-      const orderId = order?.orderId || order?.id || order?._id || 'CONFIRMED'
-      clear()
-      setStatus({
-        state: 'success',
-        message: `Your order has been confirmed successfully!`,
-        orderId: String(orderId),
-        deliveryDate: expectedDeliveryDate,
-      })
+      if (!paymentId) throw new Error('The payment record was not returned.')
+      await placeOrder(paymentId)
     } catch (error) {
       const msg =
         typeof error === 'string'
           ? error
           : apiErrorMessage(error, 'Checkout failed. Please try again.')
-      setStatus({ state: 'error', message: msg, orderId: '', deliveryDate: '' })
+      setStatus({
+        state: 'error',
+        message: msg,
+        orderId: '',
+        deliveryDate: '',
+        paymentRecordId: '',
+        paymentLinkUrl: '',
+      })
+    }
+  }
+
+  const verifyCheckoutPayment = async () => {
+    if (!status.paymentRecordId) return
+
+    setStatus((current) => ({ ...current, state: 'verifying', message: 'Verifying your PayU payment…' }))
+    try {
+      const result = await dispatch(verifyPaymentThunk(status.paymentRecordId)).unwrap()
+      const verifiedPayment = result?.payment || result?.data?.payment || result?.data || result
+      const paymentStatus = String(
+        verifiedPayment?.status || verifiedPayment?.paymentStatus || result?.status || ''
+      ).toUpperCase()
+
+      if (
+        paymentStatus !== 'SUCCESS' &&
+        result?.verified !== true &&
+        result?.success !== true
+      ) {
+        setStatus((current) => ({
+          ...current,
+          state: 'payment_pending',
+          message: 'Payment is not confirmed yet. Complete checkout in PayU, then try verification again.',
+        }))
+        return
+      }
+
+      await placeOrder(status.paymentRecordId)
+    } catch (error) {
+      const msg =
+        typeof error === 'string'
+          ? error
+          : apiErrorMessage(error, 'Payment verification failed. Please try again.')
+      setStatus((current) => ({ ...current, state: 'payment_pending', message: msg }))
     }
   }
 
@@ -287,33 +374,29 @@ export default function CartPage() {
                   icon: Truck,
                   title: 'Cash on delivery',
                   desc: 'Pay cash when package arrives at your doorstep',
-                  selected: true,
                 },
                 {
                   id: 'UPI',
                   icon: BadgeIndianRupee,
-                  title: 'UPI / Razorpay',
-                  desc: 'Online payments are not available yet',
-                  disabled: true,
-                  comingSoon: true,
+                  title: 'UPI / PayU',
+                  desc: 'Pay securely online with PayU',
                 },
               ].map((opt) => (
                 <button
                   key={opt.id}
                   type="button"
-                  disabled={opt.disabled}
-                  aria-pressed={opt.selected || false}
+                  disabled={status.state === 'loading' || status.state === 'verifying' || status.state === 'payment_pending'}
+                  onClick={() => setPaymentMethod(opt.id)}
+                  aria-pressed={paymentMethod === opt.id}
                   className={`flex w-full items-center gap-3 rounded-2xl border px-4 py-3 text-left transition ${
-                    opt.selected
+                    paymentMethod === opt.id
                       ? 'border-primary-500 bg-primary-50/70 dark:bg-primary-950/50'
-                      : opt.disabled
-                      ? 'cursor-not-allowed border-border opacity-60'
                       : 'border-border hover:border-primary-200 dark:hover:border-primary-800'
                   }`}
                 >
                   <span
                     className={`flex h-9 w-9 items-center justify-center rounded-xl ${
-                      opt.selected
+                      paymentMethod === opt.id
                         ? 'bg-primary-600 text-white'
                         : 'bg-muted text-muted-foreground'
                     }`}
@@ -323,13 +406,12 @@ export default function CartPage() {
                   <span className="flex-1">
                     <span className="flex flex-wrap items-center gap-2">
                       <span className="text-sm font-bold text-foreground">{opt.title}</span>
-                      {opt.comingSoon && <Badge variant="outline">Coming soon</Badge>}
                     </span>
                     <span className="block text-xs text-muted-foreground">{opt.desc}</span>
                   </span>
                   <span
                     className={`h-4 w-4 rounded-full border-2 ${
-                      opt.selected
+                      paymentMethod === opt.id
                         ? 'border-primary-600 bg-primary-600'
                         : 'border-border'
                     }`}
@@ -353,19 +435,42 @@ export default function CartPage() {
               </motion.div>
             )}
 
-            <Button
-              size="lg"
-              className="mt-6 w-full"
-              onClick={checkout}
-              disabled={status.state === 'loading' || !items.length}
-            >
-              {status.state === 'loading'
-                ? 'Processing…'
-                : !isAuthenticated
-                ? 'Sign in to checkout'
-                : `Place order (COD) · ₹${total}`}
-              <ArrowRight className="h-4 w-4" />
-            </Button>
+            {status.state === 'payment_pending' || status.state === 'verifying' ? (
+              <div className="mt-5 space-y-3">
+                <a
+                  href={status.paymentLinkUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-primary-200 bg-primary-50 px-4 py-3 text-sm font-bold text-primary-800 transition hover:bg-primary-100 dark:border-primary-800 dark:bg-primary-950 dark:text-primary-200 dark:hover:bg-primary-900"
+                >
+                  Continue to PayU <ArrowRight className="h-4 w-4" />
+                </a>
+                <Button
+                  size="lg"
+                  className="w-full"
+                  onClick={verifyCheckoutPayment}
+                  disabled={status.state === 'verifying'}
+                >
+                  {status.state === 'verifying' ? 'Verifying payment…' : 'I’ve paid — verify payment'}
+                </Button>
+              </div>
+            ) : (
+              <Button
+                size="lg"
+                className="mt-6 w-full"
+                onClick={checkout}
+                disabled={status.state === 'loading' || !items.length}
+              >
+                {status.state === 'loading'
+                  ? 'Processing…'
+                  : !isAuthenticated
+                    ? 'Sign in to checkout'
+                    : paymentMethod === 'COD'
+                      ? `Place order (COD) · ₹${total}`
+                      : `Create PayU payment link · ₹${total}`}
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            )}
 
             <p className="mt-4 flex items-center justify-center gap-2 text-xs text-muted-foreground">
               <ShieldCheck className="h-4 w-4 text-primary-700" /> Secure checkout · 100% private

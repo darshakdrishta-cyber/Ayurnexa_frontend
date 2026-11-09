@@ -14,16 +14,19 @@ export async function createCodPayment(amount, idempotencyKey = newIdempotencyKe
   return data
 }
 
-/** POST /api/payments — Razorpay UPI payment link (open paymentLinkUrl in browser). */
-export async function createUpiPayment({ amount, customerName, customerEmail, customerContact }, idempotencyKey = newIdempotencyKey('upi')) {
+/** POST /api/payments — create a PayU UPI payment link. */
+export async function createUpiPayment(amount, idempotencyKey = newIdempotencyKey('upi')) {
   const { data } = await api.post('/payments', {
     amount,
     paymentMethod: 'UPI',
     idempotencyKey,
-    customerName,
-    customerEmail,
-    customerContact,
   })
+  return data
+}
+
+/** POST /api/payments/{paymentRecordId}/verify — verify a completed PayU checkout. */
+export async function verifyPayment(paymentRecordId) {
+  const { data } = await api.post(`/payments/${paymentRecordId}/verify`)
   return data
 }
 

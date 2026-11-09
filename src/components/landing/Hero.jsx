@@ -62,7 +62,7 @@ export function Hero() {
             ))}
           </div>
           <p className="mt-3 max-w-lg text-xs leading-5 text-muted-foreground">
-            Online payments via Razorpay are coming soon. Cash on delivery is available at checkout.
+            Pay securely online with PayU or choose cash on delivery at checkout.
           </p>
         </div>
 

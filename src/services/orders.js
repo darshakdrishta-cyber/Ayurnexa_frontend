@@ -2,7 +2,7 @@ import api from './api'
 
 /**
  * POST /api/orders — requires a saved Payment:
- * paymentMethod === 'COD' or payment.status === 'SUCCESS' (UPI confirmed by webhook).
+ * paymentMethod === 'COD' or payment.status === 'SUCCESS' (UPI confirmed by verification).
  * Prices/totals are always recomputed server-side from the catalog.
  */
 export async function createOrder({ paymentId, items, expectedDeliveryDate }) {

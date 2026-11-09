@@ -84,8 +84,13 @@ export function OrderTrackPage() {
                         ₹{(order.totalAmount ?? order.total ?? 0).toLocaleString('en-IN')}
                       </p>
                     </div>
-                    <span className="flex h-7 shrink-0 items-center rounded-full border px-2.5 text-xs font-bold">
-                      {progress === 'DELIVERED' ? 'text-success border-success-200 bg-success-50' : 'text-primary-600 border-primary-100 bg-primary-50'}
+                    <span
+                      className={`flex h-7 shrink-0 items-center rounded-full border px-2.5 text-xs font-bold ${
+                        progress === 'DELIVERED'
+                          ? 'text-success border-success-200 bg-success-50'
+                          : 'text-primary-600 border-primary-100 bg-primary-50'
+                      }`}
+                    >
                       {STATUS_LABELS[progress] || progress}
                     </span>
                   </div>

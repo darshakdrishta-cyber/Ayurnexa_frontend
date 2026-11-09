@@ -3,6 +3,7 @@ import {
   createCodPayment,
   createUpiPayment,
   newIdempotencyKey,
+  verifyPayment,
   listPayments,
   getPayment,
   updatePayment,
@@ -25,15 +26,23 @@ export const createCodPaymentThunk = createAsyncThunk(
 
 export const createUpiPaymentThunk = createAsyncThunk(
   'payments/createUpiPayment',
-  async ({ amount, customerName, customerEmail, customerContact, idempotencyKey }, { rejectWithValue }) => {
+  async ({ amount, idempotencyKey }, { rejectWithValue }) => {
     try {
-      const data = await createUpiPayment(
-        { amount, customerName, customerEmail, customerContact },
-        idempotencyKey
-      )
+      const data = await createUpiPayment(amount, idempotencyKey)
       return data
     } catch (error) {
       return rejectWithValue(error?.response?.data?.message || 'UPI payment failed')
+    }
+  }
+)
+
+export const verifyPaymentThunk = createAsyncThunk(
+  'payments/verifyPayment',
+  async (paymentRecordId, { rejectWithValue }) => {
+    try {
+      return await verifyPayment(paymentRecordId)
+    } catch (error) {
+      return rejectWithValue(error?.response?.data?.message || 'Payment verification failed')
     }
   }
 )
