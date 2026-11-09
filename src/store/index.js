@@ -14,7 +14,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: ['uploads/uploadImage/fulfilled'],
+        ignoredActions: ['products/uploadImage/fulfilled', 'uploads/uploadImage/fulfilled'],
       },
     }),
 })

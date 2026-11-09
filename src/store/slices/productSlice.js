@@ -108,7 +108,12 @@ export const uploadImageThunk = createAsyncThunk(
       const data = await uploadImage(file)
       return data
     } catch (error) {
-      return rejectWithValue(error?.response?.data?.message || 'Upload failed')
+      return rejectWithValue(
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        error?.message ||
+        'Upload failed'
+      )
     }
   }
 )

@@ -1,4 +1,4 @@
-import api from './api'
+import api, { getToken } from './api'
 
 export async function listProducts() {
   const { data } = await api.get('/products')
@@ -41,10 +41,19 @@ export async function toggleProduct(productId) {
 }
 
 export async function uploadImage(file) {
+  const token = getToken()
+  if (!token) {
+    throw new Error('You must be signed in to upload product images.')
+  }
+
   const formData = new FormData()
   formData.append('file', file)
   const { data } = await api.post('/uploads', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
+    headers: {
+      'Content-Type': undefined, // Let the browser set multipart/form-data with the correct boundary
+      Authorization: `Bearer ${token}`,
+    },
   })
-  return data
+  const url = data?.url || data?.imageUrl || data?.data?.url || data?.productImage
+  return { ...data, url }
 }
