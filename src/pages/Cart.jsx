@@ -221,9 +221,22 @@ export default function CartPage() {
 
     try {
       if (paymentMethod === 'UPI') {
-        // Create PayU payment link: POST /api/payments { amount, paymentMethod: 'UPI', idempotencyKey }
+        // Create PayU payment link: POST /api/payments
+        const orderId = `order-${Date.now()}`
+        const customerName = user?.username || user?.name || user?.email?.split('@')[0] || 'Customer'
+        const customerContact = user?.phone || user?.mobile || ''
+        const customerEmail = user?.email || ''
+
+        // Create PayU payment link: POST /api/payments { orderId, amount, paymentMethod: 'UPI', idempotencyKey, customerName, customerContact, customerEmail }
         const payment = await dispatch(
-          createUpiPaymentThunk({ amount: total, idempotencyKey })
+          createUpiPaymentThunk({
+            amount: total,
+            idempotencyKey,
+            orderId,
+            customerName,
+            customerContact,
+            customerEmail,
+          })
         ).unwrap()
         const paymentRecordId =
           payment?.id || payment?.paymentRecordId || payment?.paymentId || payment?._id
@@ -243,11 +256,12 @@ export default function CartPage() {
           throw new Error('PayU returned an unsupported payment link protocol.')
         }
 
-        // Open returned paymentLinkUrl in a new tab/window
+        // Open PayU payment interface in a new tab
         try {
           window.open(parsedPaymentLink.href, '_blank', 'noopener,noreferrer')
         } catch {
-          // If popup is blocked by browser, user can click the button
+          // Popup blocked — fall back to same-tab navigation
+          window.location.href = parsedPaymentLink.href
         }
 
         // Save in sessionStorage so user can verify if redirected or on page reload
@@ -257,6 +271,7 @@ export default function CartPage() {
             JSON.stringify({
               paymentRecordId: String(paymentRecordId),
               paymentLinkUrl: parsedPaymentLink.href,
+              idempotencyKey,
               items: items.map((i) => ({ id: String(i.id), qty: i.qty })),
               total,
               createdAt: Date.now(),
@@ -268,10 +283,11 @@ export default function CartPage() {
           state: 'payment_pending',
           message:
             'PayU payment link has been opened. Complete your payment on PayU, then click "Verify payment" below.',
-          orderId: '',
+          orderId: String(orderId),
           deliveryDate: '',
           paymentRecordId: String(paymentRecordId),
           paymentLinkUrl: parsedPaymentLink.href,
+          idempotencyKey,
         })
         return
       }
@@ -572,15 +588,30 @@ export default function CartPage() {
             {status.state === 'payment_pending' || status.state === 'verifying' ? (
               <div className="mt-5 space-y-3">
                 {status.paymentLinkUrl && (
-                  <a
-                    href={status.paymentLinkUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-primary-200 bg-primary-50 px-4 py-3 text-sm font-bold text-primary-800 transition hover:bg-primary-100 dark:border-primary-800 dark:bg-primary-950 dark:text-primary-200 dark:hover:bg-primary-900"
-                  >
-                    Open PayU Payment Link <ExternalLink className="h-4 w-4" />
-                  </a>
+                  <div className="flex flex-col gap-2">
+                    <a
+                      href={status.paymentLinkUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-primary-200 bg-primary-50 px-4 py-4 text-sm font-bold text-primary-800 transition hover:bg-primary-100 dark:border-primary-800 dark:bg-primary-950 dark:text-primary-200 dark:hover:bg-primary-900"
+                    >
+                      🚀 Open PayU Payment Interface <ExternalLink className="h-4 w-4" />
+                    </a>
+                    <p className="text-xs text-muted-foreground">
+                      If the PayU window did not open, click the button above to open it manually.
+                    </p>
+                  </div>
                 )}
+                <div className="bg-muted/50 rounded-lg p-3 text-xs text-muted-foreground">
+                  <div className="flex justify-between mb-1">
+                    <span>Order ID:</span>
+                    <span className="font-mono text-xs">{status.orderId}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Idempotency Key:</span>
+                    <span className="font-mono text-xs">{status.idempotencyKey}</span>
+                  </div>
+                </div>
                 <Button
                   size="lg"
                   className="w-full gap-2"

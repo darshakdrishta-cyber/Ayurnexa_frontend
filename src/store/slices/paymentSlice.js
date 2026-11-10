@@ -26,9 +26,19 @@ export const createCodPaymentThunk = createAsyncThunk(
 
 export const createUpiPaymentThunk = createAsyncThunk(
   'payments/createUpiPayment',
-  async ({ amount, idempotencyKey }, { rejectWithValue }) => {
+  async (
+    { amount, idempotencyKey, orderId, customerName, customerContact, customerEmail },
+    { rejectWithValue }
+  ) => {
     try {
-      const data = await createUpiPayment(amount, idempotencyKey)
+      const data = await createUpiPayment({
+        amount,
+        idempotencyKey,
+        orderId,
+        customerName,
+        customerContact,
+        customerEmail,
+      })
       return data
     } catch (error) {
       return rejectWithValue(

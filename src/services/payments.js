@@ -16,25 +16,46 @@ export async function createCodPayment(amount, idempotencyKey = newIdempotencyKe
 
 /**
  * POST /api/payments — create a PayU UPI payment link.
- * Request body: { amount, paymentMethod: "UPI", idempotencyKey }
+ * Request body: { orderId, amount, paymentMethod: "UPI", idempotencyKey, customerName, customerContact, customerEmail }
  * Response contains paymentLinkUrl and payment record id.
  */
-export async function createUpiPayment(amountOrPayload, maybeIdempotencyKey) {
+export async function createUpiPayment(
+  amountOrPayload,
+  maybeIdempotencyKey
+) {
   let amount
   let idempotencyKey
+  let orderId
+  let customerName
+  let customerContact
+  let customerEmail
 
-  if (typeof amountOrPayload === 'object' && amountOrPayload !== null) {
+  if (
+    typeof amountOrPayload === 'object' &&
+    amountOrPayload !== null &&
+    !Array.isArray(amountOrPayload)
+  ) {
     amount = amountOrPayload.amount
-    idempotencyKey = amountOrPayload.idempotencyKey || newIdempotencyKey('payu')
+    idempotencyKey =
+      amountOrPayload.idempotencyKey || newIdempotencyKey('payu')
+    orderId = amountOrPayload.orderId
+    customerName = amountOrPayload.customerName
+    customerContact = amountOrPayload.customerContact
+    customerEmail = amountOrPayload.customerEmail
   } else {
     amount = amountOrPayload
-    idempotencyKey = maybeIdempotencyKey || newIdempotencyKey('payu')
+    idempotencyKey =
+      maybeIdempotencyKey || newIdempotencyKey('payu')
   }
 
   const { data } = await api.post('/payments', {
+    orderId,
     amount: Number(amount),
     paymentMethod: 'UPI',
     idempotencyKey,
+    customerName,
+    customerContact,
+    customerEmail,
   })
   return data
 }
