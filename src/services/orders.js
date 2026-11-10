@@ -84,7 +84,10 @@ export function normalizeOrder(order) {
     totalAmount: order.price ?? order.totalAmount ?? order.total ?? 0,
     expectedDeliveryDate: order.expectedDeliveryDate || null,
     deliveryDate: order.deliveryDate || null,
+    active: order.active ?? true,
+    user: order.user || null,
     createdAt: order.createdAt || null,
+    updatedAt: order.updatedAt || null,
     items,
   }
 }

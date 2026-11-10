@@ -1,4 +1,5 @@
 import api from './api'
+import { normalizeOrder } from './orders'
 
 /**
  * Admin API services matching backend admin endpoints:
@@ -22,7 +23,8 @@ export async function getAdminUserByEmail(email) {
  */
 export async function getAdminOrders() {
   const { data } = await api.get('/admin/orders')
-  return Array.isArray(data) ? data : data?.content || []
+  const rawList = Array.isArray(data) ? data : data?.content || []
+  return rawList.map(normalizeOrder)
 }
 
 /**
@@ -31,7 +33,7 @@ export async function getAdminOrders() {
  */
 export async function getAdminOrderById(orderId) {
   const { data } = await api.get(`/admin/orders/${orderId}`)
-  return data
+  return normalizeOrder(data)
 }
 
 /**
@@ -42,7 +44,7 @@ export async function updateAdminOrderQuickStatus(orderId, status) {
   const { data } = await api.put(`/admin/order/${orderId}`, null, {
     params: { status },
   })
-  return data
+  return normalizeOrder(data)
 }
 
 /**
@@ -51,7 +53,7 @@ export async function updateAdminOrderQuickStatus(orderId, status) {
  */
 export async function updateAdminOrderStatus(orderId, payload) {
   const { data } = await api.put(`/admin/orders/${orderId}/status`, payload)
-  return data
+  return normalizeOrder(data)
 }
 
 export default {
@@ -61,3 +63,4 @@ export default {
   updateAdminOrderQuickStatus,
   updateAdminOrderStatus,
 }
+
