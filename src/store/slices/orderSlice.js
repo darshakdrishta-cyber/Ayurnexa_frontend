@@ -156,9 +156,14 @@ const orderSlice = createSlice({
         const { orderId, status, data } = action.payload
         const index = state.orders.findIndex((o) => (o.orderId || o.id) === orderId)
         if (index !== -1) {
+          const prevOrder = state.orders[index]
           state.orders[index] = {
-            ...state.orders[index],
+            ...prevOrder,
             ...(data && typeof data === 'object' ? data : {}),
+            // Preserve user info if the status update response didn't return or populate the nested user
+            user: (data && data.user) || prevOrder.user,
+            customerName: (data && data.customerName) || prevOrder.customerName,
+            email: (data && data.email) || prevOrder.email,
             orderStatus: status,
             orderProgress: status,
           }

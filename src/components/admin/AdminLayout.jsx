@@ -4,6 +4,7 @@ import {
   ShoppingCart,
   Package,
   Plus,
+  Tag,
   LogOut,
   ShieldCheck,
   BarChart3,
@@ -15,6 +16,7 @@ const NAV = [
   { label: 'Orders', to: '/admin/orders', icon: ShoppingCart },
   { label: 'Products', to: '/admin/products', icon: Package },
   { label: 'Add Product', to: '/admin/products/add', icon: Plus },
+  { label: 'Offers', to: '/admin/offers', icon: Tag },
 ]
 
 function AdminLayout({ children }) {

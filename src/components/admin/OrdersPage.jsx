@@ -214,7 +214,7 @@ export function AdminOrders() {
                                 {config.label}
                               </span>
                             </div>
-                            <OrderProgressBar orderProgress={progress} />
+                            <OrderProgressBar orderStatus={order.orderStatus} orderProgress={order.orderProgress} />
                           </div>
 
                           {/* Back & Next Actions */}

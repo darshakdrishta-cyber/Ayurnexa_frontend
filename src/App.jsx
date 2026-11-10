@@ -18,6 +18,8 @@ import AdminLayout from './components/admin/AdminLayout'
 import { AdminOrders } from './components/admin/OrdersPage'
 import { AdminProducts } from './components/admin/ProductsPage'
 import { AddProductForm } from './components/admin/AddProductForm'
+import { AdminOffers } from './components/admin/OffersPage'
+import { OfferModal } from './components/common/OfferModal'
 import { isAdminUser } from './services/auth'
 import { useAppDispatch, useAppSelector } from './hooks/redux'
 import { fetchMe } from './store/slices/authSlice'
@@ -115,9 +117,15 @@ function AppShell() {
                 <AdminLayout><AddProductForm /></AdminLayout>
               </AdminRequired>
             } />
+            <Route path="/admin/offers" element={
+              <AdminRequired>
+                <AdminLayout><AdminOffers /></AdminLayout>
+              </AdminRequired>
+            } />
           </Routes>
         </main>
         <Footer />
+        <OfferModal />
       </div>
     </BrowserRouter>
   )

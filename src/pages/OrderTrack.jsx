@@ -91,7 +91,7 @@ export function OrderTrackPage() {
         >
           {orders.map((order) => {
             const orderId = order.orderId || order.id
-            const progress = order.orderProgress || 'PLACED'
+            const currentStatus = order.orderStatus || order.orderProgress || 'PLACED'
             const isExpanded = !!expandedOrders[orderId]
             const items = Array.isArray(order.items) ? order.items : []
 
@@ -127,12 +127,12 @@ export function OrderTrackPage() {
                     <div className="flex flex-col sm:items-end gap-2">
                       <span
                         className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-bold ${
-                          progress === 'DELIVERED'
+                          currentStatus === 'DELIVERED'
                             ? 'text-success border-success-200 bg-success-50 dark:bg-success-950/40'
                             : 'text-primary-700 border-primary-100 bg-primary-50 dark:text-primary-300 dark:border-primary-900 dark:bg-primary-950/40'
                         }`}
                       >
-                        {STATUS_LABELS[progress] || order.orderStatus || progress}
+                        {STATUS_LABELS[currentStatus] || currentStatus}
                       </span>
                       <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                         <Calendar className="w-3.5 h-3.5" />
@@ -146,9 +146,9 @@ export function OrderTrackPage() {
                     </div>
                   </div>
 
-                  {/* Progress Tracker */}
+                  {/* Progress Tracker: Highlights according to orderStatus */}
                   <div className="mt-6 pt-4 border-t border-border/60">
-                    <OrderProgressBar orderProgress={progress} />
+                    <OrderProgressBar orderStatus={order.orderStatus} orderProgress={order.orderProgress} />
                   </div>
                 </div>
 
@@ -296,7 +296,7 @@ export function OrderTrackDetail() {
         </div>
 
         <div className="my-6">
-          <OrderProgressBar orderProgress={progress} />
+          <OrderProgressBar orderStatus={order.orderStatus} orderProgress={order.orderProgress} />
         </div>
 
         <div className="space-y-4 mt-6">
