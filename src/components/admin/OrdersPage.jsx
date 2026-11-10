@@ -7,8 +7,8 @@ import { Reveal } from '../../components/common/Reveal'
 import { OrderProgressBar } from '../../components/common/OrderProgressBar'
 import { useAppDispatch, useAppSelector } from '../../hooks/redux'
 import {
-  fetchOrders,
-  updateOrderThunk,
+  fetchAdminOrdersThunk,
+  updateAdminOrderStatusThunk,
   deleteOrderThunk,
   ORDER_STEPS,
   ORDER_STEP_LABELS,
@@ -16,6 +16,8 @@ import {
 
 const STATUS_CONFIG = {
   PENDING: { label: 'Pending', variant: 'secondary' },
+  PLACED: { label: 'Placed', variant: 'secondary' },
+  CREATED: { label: 'Created', variant: 'secondary' },
   CONFIRMED: { label: 'Confirmed', variant: 'primary' },
   PACKED: { label: 'Packed', variant: 'primary' },
   SHIPPED: { label: 'Shipped', variant: 'primary' },
@@ -27,16 +29,17 @@ export function AdminOrders() {
   const { orders, loading } = useAppSelector((state) => state.orders)
 
   useEffect(() => {
-    dispatch(fetchOrders())
+    dispatch(fetchAdminOrdersThunk())
   }, [dispatch])
 
   const handleProgress = (orderId, next) => {
-    dispatch(updateOrderThunk({ orderId, payload: { orderProgress: next } }))
+    dispatch(updateAdminOrderStatusThunk({ orderId, status: next }))
   }
 
   const nextStep = (current) => {
-    const idx = ORDER_STEPS.indexOf(current)
-    return idx === -1 || idx >= ORDER_STEPS.length - 1 ? current : ORDER_STEPS[idx + 1]
+    const normalized = current === 'PLACED' || current === 'CREATED' ? 'PENDING' : current
+    const idx = ORDER_STEPS.indexOf(normalized)
+    return idx === -1 || idx >= ORDER_STEPS.length - 1 ? normalized : ORDER_STEPS[idx + 1]
   }
 
   return (
@@ -46,7 +49,7 @@ export function AdminOrders() {
           <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground">Orders</h1>
           <p className="text-muted-foreground">Update order progress as items move through fulfillment.</p>
         </div>
-        <Button onClick={() => dispatch(fetchOrders())} variant="outline" size="sm">
+        <Button onClick={() => dispatch(fetchAdminOrdersThunk())} variant="outline" size="sm">
           <RotateCcw className="h-4 w-4 mr-2" /> Refresh
         </Button>
       </Reveal>

@@ -5,6 +5,8 @@ import {
   getOrder,
   updateOrder,
   deleteOrder,
+  getAdminOrders,
+  updateAdminOrderQuickStatus,
 } from '../../services/orders'
 
 export const ORDER_STEPS = ['PENDING', 'CONFIRMED', 'PACKED', 'SHIPPED', 'DELIVERED']
@@ -25,6 +27,27 @@ export const fetchOrders = createAsyncThunk('orders/fetchOrders', async (_, { re
     return rejectWithValue(error?.response?.data?.message || 'Failed to load orders')
   }
 })
+
+export const fetchAdminOrdersThunk = createAsyncThunk('orders/fetchAdminOrders', async (_, { rejectWithValue }) => {
+  try {
+    const data = await getAdminOrders()
+    return data
+  } catch (error) {
+    return rejectWithValue(error?.response?.data?.message || 'Failed to load admin orders')
+  }
+})
+
+export const updateAdminOrderStatusThunk = createAsyncThunk(
+  'orders/updateAdminOrderStatus',
+  async ({ orderId, status }, { rejectWithValue }) => {
+    try {
+      const data = await updateAdminOrderQuickStatus(orderId, status)
+      return { orderId, status, data }
+    } catch (error) {
+      return rejectWithValue(error?.response?.data?.message || 'Failed to update order status')
+    }
+  }
+)
 
 export const fetchOrder = createAsyncThunk('orders/fetchOrder', async (orderId, { rejectWithValue }) => {
   try {
@@ -117,6 +140,29 @@ const orderSlice = createSlice({
       })
       .addCase(deleteOrderThunk.fulfilled, (state, action) => {
         state.orders = state.orders.filter((o) => o.id !== action.payload && o.orderId !== action.payload)
+      })
+      .addCase(fetchAdminOrdersThunk.pending, (state) => {
+        state.loading = true
+      })
+      .addCase(fetchAdminOrdersThunk.fulfilled, (state, action) => {
+        state.loading = false
+        state.orders = action.payload
+      })
+      .addCase(fetchAdminOrdersThunk.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.payload
+      })
+      .addCase(updateAdminOrderStatusThunk.fulfilled, (state, action) => {
+        const { orderId, status, data } = action.payload
+        const index = state.orders.findIndex((o) => (o.orderId || o.id) === orderId)
+        if (index !== -1) {
+          state.orders[index] = {
+            ...state.orders[index],
+            ...(data && typeof data === 'object' ? data : {}),
+            orderStatus: status,
+            orderProgress: status,
+          }
+        }
       })
   },
 })
