@@ -6,10 +6,10 @@ import { useAppSelector } from '../../hooks/redux'
 
 const EASE = [0.22, 1, 0.36, 1]
 const TRUST_POINTS = [
-  { icon: PackageCheck, label: 'Batch-tested formula' },
-  { icon: ShieldCheck, label: 'Discreet packaging' },
-  { icon: Zap, label: 'Fast-acting vitality support' },
-  { icon: ShieldCheck, label: 'Cash on delivery available' },
+  { icon: PackageCheck, label: 'Classical Ayurvedic herbs' },
+  { icon: ShieldCheck, label: 'GMP certified & batch tested' },
+  { icon: Zap, label: 'Pure rasayanas for natural stamina' },
+  { icon: ShieldCheck, label: 'Discreet packaging & COD available' },
 ]
 
 export function Hero() {
@@ -30,25 +30,26 @@ export function Hero() {
             transition={{ duration: 0.55, ease: EASE }}
             className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.16em] text-primary-700 dark:text-primary-300"
           >
-            <span className="h-px w-8 bg-secondary-500" /> Ayurveda for men’s vitality
+            <span className="h-px w-8 bg-secondary-500" /> Sacred 5,000-Year Vedic Science · Certified Pure
           </motion.p>
 
           <motion.h1
             initial={reduce ? false : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.08, ease: EASE }}
-            className="max-w-[14ch] text-balance font-display text-[2.9rem] font-medium leading-[1.02] text-foreground sm:text-6xl lg:text-[4.75rem]"
+            className="max-w-[15ch] text-balance font-display text-[2.9rem] font-medium leading-[1.04] text-foreground sm:text-6xl lg:text-[4.6rem]"
           >
-            Reclaim your bed productivity<span className="text-primary-700 dark:text-primary-300"> — naturally.</span>
+            Rooted in Authentic Ayurveda.<br />
+            Powered by <span className="text-primary-700 dark:text-primary-300">Ayurnexa.</span>
           </motion.h1>
 
           <motion.p
             initial={reduce ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, delay: 0.16, ease: EASE }}
-            className="max-w-lg text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8"
+            className="max-w-xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8"
           >
-            Ayurnexa Bana is an Ayurvedic vitality formula built to support stamina, drive and intimate performance — so you show up with confidence, night after night. Powerful sex drive, restored naturally. Discreet packaging, private delivery.
+            Ayurveda teaches that true vitality stems from balanced doshas, nourishing rasayanas, and uncompromised organic botanicals. Ayurnexa harnesses ancient Ayurvedic wisdom — formulating cold-extracted Ashwagandha, purified Himalayan Shilajit, Safed Musli, and therapeutic botanical oils to restore strength, stamina, and natural vigor without synthetic chemicals.
           </motion.p>
 
           <motion.div
@@ -84,7 +85,17 @@ export function Hero() {
 }
 
 export function TrustMarquee() {
-  const items = ['Ayurnexa Bana', 'Stamina', 'Vitality', 'Confidence', 'Discreet delivery', 'Batch tested', 'Cash on delivery']
+  const items = [
+    'Authentic Ayurveda',
+    'Ayurnexa Formulations',
+    'Cold-Pressed Botanical Oils',
+    'Himalayan Shilajit',
+    'Pure Ashwagandha',
+    'GMP Certified',
+    'Vedic Rasayanas',
+    'Discreet Delivery',
+    'Cash on Delivery',
+  ]
   const doubled = [...items, ...items]
 
   return (
