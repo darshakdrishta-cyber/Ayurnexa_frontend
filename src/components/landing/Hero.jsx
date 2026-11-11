@@ -10,10 +10,11 @@ export function Hero() {
           <p className="eyebrow rise text-xs font-bold uppercase tracking-[0.18em]">
             Sacred 5,000-Year Vedic Science · 100% Certified Pure
           </p>
+          
 
-          <h1 className="rise d1">
-            Ayurveda. <i>Reborn.</i>
-          </h1>
+          <h2 className="rise d1 text-[27px] sm:text-[33px] lg:text-[43px]">
+            Ayurnexa — Ancient Ayurvedic Formulations for Modern Vitality
+          </h2>
 
           <div className="deva rise d1">
             आयुर्वेदः अमृतम् — Vitality from Nature's Roots

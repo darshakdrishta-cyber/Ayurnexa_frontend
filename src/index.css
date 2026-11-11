@@ -291,7 +291,17 @@ body {
   letter-spacing: -0.025em;
   font-family: var(--display);
 }
-.hero h1 i {
+.hero h2 {
+  font-size: clamp(29px, 3.8vw, 47px);
+  line-height: 1.15;
+  margin-top: 16px;
+  letter-spacing: -0.02em;
+  font-family: var(--display);
+  font-weight: 600;
+  color: var(--on-neem);
+}
+.hero h1 i,
+.hero h2 i {
   color: var(--saffron);
   font-style: normal;
 }
