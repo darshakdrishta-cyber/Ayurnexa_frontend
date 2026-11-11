@@ -12,7 +12,7 @@
    everything else derived from these four.
 ---------------------------------------------------------------- */
 @theme {
-  /* Primary — deep ayurvedic green (matches Ayurnexa logo) */
+  /* Primary — deep ayurvedic green (matches Ayurnexaa logo) */
   --color-primary-50: #F0F7F3;
   --color-primary-100: #DCEEE3;
   --color-primary-200: #B9DDC9;
@@ -25,7 +25,7 @@
   --color-primary-900: #133624;
   --color-primary-950: #0A2216;
 
-  /* Secondary — warm gold (matches Ayurnexa logo accent) */
+  /* Secondary — warm gold (matches Ayurnexaa logo accent) */
   --color-secondary-50: #FDF8EC;
   --color-secondary-100: #F9EDCD;
   --color-secondary-200: #F2D99A;
@@ -81,7 +81,7 @@
   --color-ring: var(--ring);
 }
 
-/* Default theme: AyurNexa gold (dark) */
+/* Default theme: Ayurnexaa gold (dark) */
 :root {
   --color-primary-50: #fdf8ec;
   --color-primary-100: #f9edcd;
@@ -106,6 +106,14 @@
   --color-secondary-800: #7a5a22;
   --color-secondary-900: #5a4218;
   --color-secondary-950: #3a2a0e;
+
+  /* Ayurvedic Hero theme variables */
+  --neem: #11281c;
+  --on-neem: #f4f8f3;
+  --on-neem-soft: #c8d8ce;
+  --saffron: #f5a623;
+  --display: var(--font-display);
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   --background: #090909;
   --foreground: #f8f5ed;
@@ -143,6 +151,14 @@
   --color-secondary-800: #7A581A;
   --color-secondary-900: #664A17;
   --color-secondary-950: #3A280A;
+
+  /* Ayurvedic Hero theme variables */
+  --neem: #133624;
+  --on-neem: #f4f8f3;
+  --on-neem-soft: #c8d8ce;
+  --saffron: #f5a623;
+  --display: var(--font-display);
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   --background: #F7FAF8;
   --foreground: #0F1A14;
@@ -232,3 +248,108 @@ body {
 .animate-float-slow {
   animation: float-slow 7s ease-in-out infinite;
 }
+
+/* User Hero Styling & Animation */
+.hero {
+  background: var(--neem);
+  color: var(--on-neem);
+  overflow: hidden;
+  position: relative;
+}
+.hero .in {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: clamp(24px, 5vw, 64px);
+  align-items: center;
+  padding-block: clamp(48px, 7vw, 96px);
+}
+.hero .eyebrow {
+  color: var(--saffron);
+}
+.hero h1 {
+  font-size: clamp(48px, 9vw, 110px);
+  line-height: 0.95;
+  margin-top: 18px;
+  letter-spacing: -0.025em;
+  font-family: var(--display);
+}
+.hero h1 i {
+  color: var(--saffron);
+  font-style: normal;
+}
+.deva {
+  font-family: var(--display);
+  font-size: clamp(20px, 2.4vw, 28px);
+  color: var(--on-neem-soft);
+  margin-top: 8px;
+}
+.hero .lead {
+  color: var(--on-neem);
+  opacity: 0.9;
+  margin-top: 28px;
+  max-width: 580px;
+  line-height: 1.7;
+}
+.cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 32px;
+}
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 28px;
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(234, 241, 228, 0.18);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--on-neem-soft);
+}
+.pack {
+  width: 100%;
+  max-width: 440px;
+  justify-self: center;
+  display: block;
+}
+.pack text {
+  font-family: var(--display);
+}
+.pack .mono {
+  font-family: var(--mono);
+}
+.rise {
+  animation: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.rise.d1 {
+  animation-delay: 0.08s;
+}
+.rise.d2 {
+  animation-delay: 0.16s;
+}
+.rise.d3 {
+  animation-delay: 0.24s;
+}
+@keyframes rise {
+  from {
+    transform: translateY(14px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+@media (max-width: 860px) {
+  .hero .in {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .pack {
+    max-width: 300px;
+    margin-top: 24px;
+  }
+}
+
