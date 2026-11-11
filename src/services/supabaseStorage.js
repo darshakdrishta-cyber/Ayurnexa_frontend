@@ -16,7 +16,7 @@ export async function uploadToSupabase(file, options = {}) {
   }
 
   const supabaseUrl = (options.url || appConfig.supabaseUrl || '').replace(/\/$/, '')
-  const bucket = options.bucket || appConfig.supabaseBucket || 'Ayurnexa'
+  const bucket = options.bucket || appConfig.supabaseBucket || 'Ayurnexaa'
   const folder = options.folder || 'products'
 
   // Supabase secret key bypasses RLS policies; publishable key is fallback

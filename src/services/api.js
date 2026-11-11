@@ -2,8 +2,8 @@ import axios from 'axios'
 import { appConfig } from '../config'
 import { logError } from '../utils/errorLog'
 
-export const TOKEN_KEY = 'Ayurnexa-token_009'
-export const USER_KEY = 'ayurnexa_user'
+export const TOKEN_KEY = 'Ayurnexaa-token_009'
+export const USER_KEY = 'Ayurnexaa_user'
 
 function setCookie(name, value, days = 7) {
   try {
@@ -38,7 +38,7 @@ export function getToken() {
     const fromStorage =
       localStorage.getItem(TOKEN_KEY) ||
       localStorage.getItem('token') ||
-      localStorage.getItem('ayurnexa_token')
+      localStorage.getItem('Ayurnexaa_token')
     if (fromStorage) return fromStorage
   } catch {}
 
@@ -60,7 +60,7 @@ export function removeToken() {
   try {
     localStorage.removeItem(TOKEN_KEY)
     localStorage.removeItem('token')
-    localStorage.removeItem('ayurnexa_token')
+    localStorage.removeItem('Ayurnexaa_token')
   } catch {}
 }
 

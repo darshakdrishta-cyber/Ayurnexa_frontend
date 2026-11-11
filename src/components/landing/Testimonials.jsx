@@ -9,7 +9,7 @@ const REVIEWS = [
     city: 'Delhi',
     initials: 'RM',
     tone: 'bg-primary-600',
-    product: 'Ayurnex Bana',
+    product: 'Ayurnexa Bana',
     text: 'Two weeks in and my energy in the bedroom is completely different. I feel present, confident and actually rested the next morning.',
   },
   {
@@ -17,15 +17,15 @@ const REVIEWS = [
     city: 'Jaipur',
     initials: 'VS',
     tone: 'bg-secondary-500',
-    product: 'Ayurnex Bana',
-    text: 'Stress had killed my drive. Ayurnex Bana brought it back without any side effects. Discreet delivery was a big plus.',
+    product: 'Ayurnexa Bana',
+    text: 'Stress had killed my drive. Ayurnexa Bana brought it back without any side effects. Discreet delivery was a big plus.',
   },
   {
     name: 'Ankit Sharma',
     city: 'Lucknow',
     initials: 'AS',
     tone: 'bg-primary-800',
-    product: 'Ayurnex Bana',
+    product: 'Ayurnexa Bana',
     text: 'My partner noticed the change before I did. More stamina, better mood, and zero awkward questions thanks to plain packaging.',
   },
   {
@@ -33,8 +33,8 @@ const REVIEWS = [
     city: 'Kochi',
     initials: 'SP',
     tone: 'bg-secondary-700',
-    product: 'Ayurnex Bana',
-    text: 'I have tried four brands. Ayurnex Bana is the only one that actually delivers on stamina and confidence. Easy UPI checkout too.',
+    product: 'Ayurnexa Bana',
+    text: 'I have tried four brands. Ayurnexa Bana is the only one that actually delivers on stamina and confidence. Easy UPI checkout too.',
   },
 ]
 
@@ -63,7 +63,7 @@ export function Testimonials() {
       {/* <SectionHeading
         eyebrow="Reviews"
         title="Real men, real results"
-        description="Feedback from people who made Ayurnex Bana part of their routine."
+        description="Feedback from people who made Ayurnexa Bana part of their routine."
       /> */}
 
       {/* <Reveal delay={0.1} className="relative mx-auto mt-12 max-w-4xl">

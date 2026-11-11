@@ -82,7 +82,7 @@ export default function CartPage() {
     const orderId = order?.orderId || order?.id || order?._id || 'CONFIRMED'
     clear()
     try {
-      sessionStorage.removeItem('ayurnexa_pending_payment')
+      sessionStorage.removeItem('Ayurnexaa_pending_payment')
     } catch {}
 
     setStatus({
@@ -163,7 +163,7 @@ export default function CartPage() {
     if (queryPaymentId && isAuthenticated) {
       let savedItems = itemsRef.current
       try {
-        const saved = sessionStorage.getItem('ayurnexa_pending_payment')
+        const saved = sessionStorage.getItem('Ayurnexaa_pending_payment')
         if (saved) {
           const parsed = JSON.parse(saved)
           if (parsed.items && parsed.items.length) {
@@ -177,7 +177,7 @@ export default function CartPage() {
     }
 
     try {
-      const saved = sessionStorage.getItem('ayurnexa_pending_payment')
+      const saved = sessionStorage.getItem('Ayurnexaa_pending_payment')
       if (saved && statusRef.current.state === 'idle') {
         const parsed = JSON.parse(saved)
         if (parsed.paymentRecordId && Date.now() - (parsed.createdAt || 0) < 3600000) {
@@ -196,7 +196,7 @@ export default function CartPage() {
 
   const cancelPendingPayment = () => {
     try {
-      sessionStorage.removeItem('ayurnexa_pending_payment')
+      sessionStorage.removeItem('Ayurnexaa_pending_payment')
     } catch {}
     setStatus({
       state: 'idle',
@@ -267,7 +267,7 @@ export default function CartPage() {
         // Save in sessionStorage so user can verify if redirected or on page reload
         try {
           sessionStorage.setItem(
-            'ayurnexa_pending_payment',
+            'Ayurnexaa_pending_payment',
             JSON.stringify({
               paymentRecordId: String(paymentRecordId),
               paymentLinkUrl: parsedPaymentLink.href,
@@ -334,7 +334,7 @@ export default function CartPage() {
             Order Confirmed!
           </h1>
           <p className="mt-2 text-sm text-muted-foreground sm:text-base">
-            Thank you for ordering with Ayurnexa. Your wellness formulas are being prepared with
+            Thank you for ordering with Ayurnexaa. Your wellness formulas are being prepared with
             discreet packaging.
           </p>
 

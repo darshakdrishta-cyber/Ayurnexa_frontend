@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 
-const CART_KEY = 'ayurnexa_cart'
+const CART_KEY = 'Ayurnexaa_cart'
 const CartContext = createContext(null)
 
 function normalizeCartItem(product, qty = 1) {

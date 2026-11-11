@@ -17,7 +17,7 @@ export function CTA() {
               Start your recovery today
             </p>
             <h2 className="mt-4 text-balance font-display text-3xl font-medium leading-tight sm:text-4xl">
-              Feel like yourself again. Try Ayurnex Bana.
+              Feel like yourself again. Try Ayurnexa Bana.
             </h2>
             <p className="mt-3 max-w-xl text-sm leading-6 text-white/75 sm:text-base">
               Reclaim your bed productivity, stamina and confidence — discreetly, naturally, at your own pace.
@@ -25,7 +25,7 @@ export function CTA() {
           </div>
           <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
             <LinkButton to="/products" variant="secondary" size="lg" className="w-full sm:w-auto">
-              Shop Ayurnex Bana <ArrowRight className="h-4 w-4" />
+              Shop Ayurnexa Bana <ArrowRight className="h-4 w-4" />
             </LinkButton>
             {!isAuthenticated ? (
               <LinkButton

@@ -20,7 +20,7 @@ export default defineConfig(({ mode }) => {
         env.SUPABASE_SECRET_KEY || env.VITE_SUPABASE_SECRET_KEY || ''
       ),
       'import.meta.env.SUPABASE_BUCKET': JSON.stringify(
-        env.SUPABASE_BUCKET || env.VITE_SUPABASE_BUCKET || 'Ayurnexa'
+        env.SUPABASE_BUCKET || env.VITE_SUPABASE_BUCKET || 'Ayurnexaa'
       ),
       'import.meta.env.SUPABASE_S3_ENDPOINT': JSON.stringify(env.SUPABASE_S3_ENDPOINT || ''),
       'import.meta.env.SupabaseS3acceskeyid': JSON.stringify(env.SupabaseS3acceskeyid || ''),

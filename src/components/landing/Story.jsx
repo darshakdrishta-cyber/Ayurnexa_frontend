@@ -17,7 +17,7 @@ export function Story() {
         <div className="flex flex-col items-start gap-5">
           <Reveal>
             <span className="inline-flex items-center gap-3 text-xs font-bold uppercase tracking-[0.16em] text-primary-700 dark:text-primary-300">
-              <span className="h-px w-7 bg-secondary-500" /> The Ayurnex Bana difference
+              <span className="h-px w-7 bg-secondary-500" /> The Ayurnexa Bana difference
             </span>
           </Reveal>
           <Reveal delay={0.06}>
@@ -27,7 +27,7 @@ export function Story() {
           </Reveal>
           <Reveal delay={0.12}>
             <p className="max-w-xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
-              Ayurnex Bana brings Ayurvedic energy formulations into a calm, private storefront. Choose what fits your routine, pay how you want and keep your orders discreet.
+              Ayurnexa Bana brings Ayurvedic energy formulations into a calm, private storefront. Choose what fits your routine, pay how you want and keep your orders discreet.
             </p>
           </Reveal>
           <Reveal delay={0.18}>

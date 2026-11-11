@@ -5,7 +5,7 @@ const STEPS = [
   {
     icon: ClipboardList,
     step: '01',
-    title: 'Choose Ayurnex Bana',
+    title: 'Choose Ayurnexa Bana',
     desc: 'Pick the formula that fits your routine and goals.',
   },
   {
@@ -29,7 +29,7 @@ export function Process() {
         <SectionHeading
           eyebrow="How it works"
           title="Three steps to renewed vitality"
-          description="Choose Ayurnex Bana, pay securely with PayU or cash on delivery, and track it discreetly."
+          description="Choose Ayurnexa Bana, pay securely with PayU or cash on delivery, and track it discreetly."
         />
 
         <div className="relative mt-14 grid gap-6 md:grid-cols-3">

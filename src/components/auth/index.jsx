@@ -19,7 +19,7 @@ function AuthShell({ children, title, subtitle, side, footer }) {
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/15 text-sm font-extrabold backdrop-blur">
               A
             </span>
-            <span className="font-display text-xl font-semibold">Ayurnexa</span>
+            <span className="font-display text-xl font-semibold">Ayurnexaa</span>
           </Link>
           <div>
             <h2 className="max-w-md text-balance font-display text-4xl font-semibold leading-[1.15]">
@@ -37,7 +37,7 @@ function AuthShell({ children, title, subtitle, side, footer }) {
             </div>
           </div>
           <p className="text-xs text-white/50">
-            © {new Date().getFullYear()} Ayurnexa · Men's wellness, privately delivered
+            © {new Date().getFullYear()} Ayurnexaa · Men's wellness, privately delivered
           </p>
         </div>
       </div>

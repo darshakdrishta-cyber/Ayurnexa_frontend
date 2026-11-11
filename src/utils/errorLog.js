@@ -1,4 +1,4 @@
-const KEY = 'ayurnexa_error_log'
+const KEY = 'Ayurnexaa_error_log'
 const MAX = 100
 
 export function getErrorLog() {
@@ -18,7 +18,7 @@ export function logError(entry) {
   } catch {
     /* ignore */
   }
-  try { window.dispatchEvent(new CustomEvent('ayurnexa:error-log')) } catch {
+  try { window.dispatchEvent(new CustomEvent('Ayurnexaa:error-log')) } catch {
     /* ignore */
   }
 }
@@ -27,7 +27,7 @@ export function clearErrorLog() {
   try { localStorage.removeItem(KEY) } catch {
     /* ignore */
   }
-  try { window.dispatchEvent(new CustomEvent('ayurnexa:error-log')) } catch {
+  try { window.dispatchEvent(new CustomEvent('Ayurnexaa:error-log')) } catch {
     /* ignore */
   }
 }

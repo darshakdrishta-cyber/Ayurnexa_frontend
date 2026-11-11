@@ -8,7 +8,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository_owner }}/ayurnexa-frontend
+  IMAGE_NAME: ${{ github.repository_owner }}/Ayurnexaa-frontend
 
 jobs:
   build-and-push:
@@ -77,30 +77,30 @@ jobs:
           envs: GHCR_TOKEN
           script: |
             set -e
-            ENV_FILE=/opt/ayurnexfrontend/.env
+            ENV_FILE=/opt/Ayurnexafrontend/.env
             if [ ! -f "$ENV_FILE" ]; then
               echo "Required environment file not found: $ENV_FILE" >&2
               exit 1
             fi
             echo "$GHCR_TOKEN" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            docker pull ghcr.io/${{ github.repository_owner }}/ayurnexa-frontend:latest
-            # remove any container named ayurnexa or publishing port 80
-            docker rm -f ayurnexa || true
+            docker pull ghcr.io/${{ github.repository_owner }}/Ayurnexaa-frontend:latest
+            # remove any container named Ayurnexaa or publishing port 80
+            docker rm -f Ayurnexaa || true
             # free port 5173 if occupied
             if command -v fuser >/dev/null 2>&1; then fuser -k 5173/tcp || true; fi
             for pid in $(ss -ltnp 'sport = :5173' 2>/dev/null | grep -oP 'pid=\K[0-9]+' | sort -u); do kill -9 "$pid" || true; done
-            docker rm -f ayurnexa || true
+            docker rm -f Ayurnexaa || true
             for c in $(docker ps -q --filter "publish=5173"); do docker rm -f "$c" || true; done
-            if ! docker run -d --name ayurnexa --env-file "$ENV_FILE" -p 5173:80 --restart unless-stopped ghcr.io/${{ github.repository_owner }}/ayurnexa-frontend:latest; then
-              echo "Failed to start the Ayurnexa container." >&2
-              docker logs ayurnexa 2>&1 || true
+            if ! docker run -d --name Ayurnexaa --env-file "$ENV_FILE" -p 5173:80 --restart unless-stopped ghcr.io/${{ github.repository_owner }}/Ayurnexaa-frontend:latest; then
+              echo "Failed to start the Ayurnexaa container." >&2
+              docker logs Ayurnexaa 2>&1 || true
               exit 1
             fi
             sleep 5
-            if ! docker exec ayurnexa wget -q -O /dev/null http://127.0.0.1/; then
-              echo "Ayurnexa container is not serving HTTP on port 80." >&2
-              docker logs ayurnexa 2>&1 || true
+            if ! docker exec Ayurnexaa wget -q -O /dev/null http://127.0.0.1/; then
+              echo "Ayurnexaa container is not serving HTTP on port 80." >&2
+              docker logs Ayurnexaa 2>&1 || true
               exit 1
             fi
-            docker ps --filter "name=ayurnexa" --format "{{.Names}} {{.Status}}"
+            docker ps --filter "name=Ayurnexaa" --format "{{.Names}} {{.Status}}"
             docker image prune -f

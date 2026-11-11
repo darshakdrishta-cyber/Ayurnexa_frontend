@@ -1,8 +1,8 @@
-# AyurNexa Backend API - Frontend Integration Documentation
+# Ayurnexaa Backend API - Frontend Integration Documentation
 
 ## Overview
 
-AyurNexa is a Spring Boot REST API backed by MongoDB. It provides authentication, product catalog, payments (COD and Razorpay UPI), order management, and image uploads to Supabase Storage for an Ayurveda e-commerce application.
+Ayurnexaa is a Spring Boot REST API backed by MongoDB. It provides authentication, product catalog, payments (COD and Razorpay UPI), order management, and image uploads to Supabase Storage for an Ayurveda e-commerce application.
 
 All application API routes are mounted under `/api`. Every application route (except the Razorpay webhook) requires an `X-API-Key` header. Routes marked with `@JWTAnnotation` additionally require a user Bearer JWT returned by the backend after Google sign-in.
 

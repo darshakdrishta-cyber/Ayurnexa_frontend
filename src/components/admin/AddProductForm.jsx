@@ -369,7 +369,7 @@ export function AddProductForm() {
               <div className="flex items-center gap-2">
                 <input
                   {...register('productImage')}
-                  placeholder="https://...supabase.co/storage/v1/object/public/Ayurnexa/products/..."
+                  placeholder="https://...supabase.co/storage/v1/object/public/Ayurnexaa/products/..."
                   className="flex-1 rounded-xl border border-border bg-background px-3.5 py-2.5 text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 font-mono"
                   onChange={(e) => {
                     setValue('productImage', e.target.value)

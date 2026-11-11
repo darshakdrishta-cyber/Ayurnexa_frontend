@@ -6,7 +6,7 @@ export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState('gold')
 
   useEffect(() => {
-    const stored = localStorage.getItem('ayurnexa_theme')
+    const stored = localStorage.getItem('Ayurnexaa_theme')
     const initial = stored === 'green' ? 'green' : 'gold'
     setTheme(initial)
     document.documentElement.setAttribute('data-theme', initial)
@@ -16,7 +16,7 @@ export function ThemeProvider({ children }) {
     const next = theme === 'gold' ? 'green' : 'gold'
     setTheme(next)
     document.documentElement.setAttribute('data-theme', next)
-    localStorage.setItem('ayurnexa_theme', next)
+    localStorage.setItem('Ayurnexaa_theme', next)
   }
 
   const value = { theme, toggle }

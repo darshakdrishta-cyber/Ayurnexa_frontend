@@ -7,7 +7,7 @@ const ITEMS = [
     icon: Zap,
     number: '01',
     title: 'Restored stamina',
-    desc: 'Ayurnex Bana supports energy and endurance for stronger, more confident nights.',
+    desc: 'Ayurnexa Bana supports energy and endurance for stronger, more confident nights.',
     href: '/products',
   },
   {
@@ -37,7 +37,7 @@ export function Features() {
   return (
     <section className="container py-20 sm:py-24">
       <SectionHeading
-        eyebrow="Why Ayurnex Bana"
+        eyebrow="Why Ayurnexa Bana"
         title="Energy, drive and confidence — restored"
         description="A clear, private path from low vitality to your best self. Browse, order with cash on delivery, and track discreetly."
       />

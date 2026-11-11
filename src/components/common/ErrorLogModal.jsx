@@ -12,10 +12,10 @@ export function ErrorLogModal({ open, onClose }) {
       logsRef.current = next
       setLogs(next)
     }
-    window.addEventListener('ayurnexa:error-log', refresh)
+    window.addEventListener('Ayurnexaa:error-log', refresh)
     window.addEventListener('storage', refresh)
     return () => {
-      window.removeEventListener('ayurnexa:error-log', refresh)
+      window.removeEventListener('Ayurnexaa:error-log', refresh)
       window.removeEventListener('storage', refresh)
     }
   }, [])

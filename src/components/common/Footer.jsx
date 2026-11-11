@@ -86,8 +86,8 @@ export default function Footer() {
           </h3>
           {[
             { icon: Mail, text: 'info@ayurnexa.com', href: 'mailto:info@ayurnexa.com' },
-            { icon: Phone, text: '+91 98765 43210', href: 'tel:+919876543210' },
-            { icon: MapPin, text: 'Kerala, India' },
+            { icon: Phone, text: '9220350048,9220390048', href: 'tel:9220350048,9220390048' },
+            { icon: MapPin, text: 'Beta Greater Noida 201310' },
           ].map(({ icon: Icon, text, href }) => (
             href ? (
               <a
