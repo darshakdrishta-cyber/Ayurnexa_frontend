@@ -85,14 +85,25 @@ export default function Footer() {
             Reach us
           </h3>
           {[
-            { icon: Mail, text: 'care@ayurnexa.in' },
-            { icon: Phone, text: '+91 98765 43210' },
+            { icon: Mail, text: 'info@ayurnexa.com', href: 'mailto:info@ayurnexa.com' },
+            { icon: Phone, text: '+91 98765 43210', href: 'tel:+919876543210' },
             { icon: MapPin, text: 'Kerala, India' },
-          ].map(({ icon: Icon, text }) => (
-            <p key={text} className="flex items-center gap-2.5 text-sm text-muted-foreground">
-              <Icon className="h-4 w-4 shrink-0 text-primary-600 dark:text-primary-400" />
-              {text}
-            </p>
+          ].map(({ icon: Icon, text, href }) => (
+            href ? (
+              <a
+                key={text}
+                href={href}
+                className="flex items-center gap-2.5 text-sm text-muted-foreground hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+              >
+                <Icon className="h-4 w-4 shrink-0 text-primary-600 dark:text-primary-400" />
+                {text}
+              </a>
+            ) : (
+              <p key={text} className="flex items-center gap-2.5 text-sm text-muted-foreground">
+                <Icon className="h-4 w-4 shrink-0 text-primary-600 dark:text-primary-400" />
+                {text}
+              </p>
+            )
           ))}
           <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
             <ThemeToggle /> Appearance
@@ -102,7 +113,7 @@ export default function Footer() {
 
       <div className="relative border-t border-border">
         <div className="container flex flex-col items-center justify-between gap-3 py-6 text-xs text-muted-foreground sm:flex-row">
-          <p>© {new Date().getFullYear()} Ayurnexa. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Ayurnexaa. All rights reserved.</p>
           <p className="flex items-center gap-1.5">
             Made with <Leaf className="h-3.5 w-3.5 text-primary-600" /> for holistic wellness
           </p>

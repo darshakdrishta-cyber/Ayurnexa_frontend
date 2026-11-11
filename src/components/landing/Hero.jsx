@@ -48,10 +48,22 @@ export function Hero() {
             transition={{ duration: 0.65, delay: 0.16, ease: EASE }}
             className="max-w-lg text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8"
           >
-            Ayurnex Bana is an Ayurvedic vitality formula built to support stamina, drive and intimate performance — so you show up with confidence, night after night. Powerful sex drive, restored naturally. Discreet packaging, private delivery.
+            Ayurnexa Bana is an Ayurvedic vitality formula built to support stamina, drive and intimate performance — so you show up with confidence, night after night. Powerful sex drive, restored naturally. Discreet packaging, private delivery.
           </motion.p>
 
-  
+          <motion.div
+            initial={reduce ? false : { opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.22, ease: EASE }}
+            className="flex flex-wrap items-center gap-4"
+          >
+            <LinkButton to="#shop" variant="secondary" size="lg" className="shadow-lg shadow-secondary-900/10">
+              Explore bestsellers <ArrowRight className="h-4 w-4 ml-1.5" />
+            </LinkButton>
+            <LinkButton to="/products" variant="outline" size="lg">
+              View all products
+            </LinkButton>
+          </motion.div>
 
           <div className="mt-2 flex flex-wrap gap-x-6 gap-y-3 border-t border-border pt-5">
             {TRUST_POINTS.map(({ icon: Icon, label }) => (
@@ -72,11 +84,11 @@ export function Hero() {
 }
 
 export function TrustMarquee() {
-  const items = ['Ayurnex Bana', 'Stamina', 'Vitality', 'Confidence', 'Discreet delivery', 'Batch tested', 'Cash on delivery']
+  const items = ['Ayurnexa Bana', 'Stamina', 'Vitality', 'Confidence', 'Discreet delivery', 'Batch tested', 'Cash on delivery']
   const doubled = [...items, ...items]
 
   return (
-    <div className="overflow-hidden border-y border-border bg-muted/50 py-4" aria-label="Ayurnex Bana benefits">
+    <div className="overflow-hidden border-y border-border bg-muted/50 py-4" aria-label="Ayurnexa Bana benefits">
       <div className="animate-marquee flex w-max items-center gap-9">
         {doubled.map((item, index) => (
           <span key={`${item}-${index}`} className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground sm:text-sm">
