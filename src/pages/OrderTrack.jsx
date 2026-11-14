@@ -10,6 +10,8 @@ import {
   CheckCircle2,
   ChevronDown,
   ChevronUp,
+  MapPin,
+  Phone,
 } from 'lucide-react'
 import { LinkButton } from '../components/common/Button'
 import { Card } from '../components/common/Card'
@@ -238,6 +240,27 @@ export function OrderTrackPage() {
                     )}
                   </div>
 
+                  {/* Delivery Address (safe check for null/undefined) */}
+                  {order.address && (order.address.building || order.address.pincode) && (
+                    <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-border/80 bg-background/60 p-3 text-xs">
+                      <MapPin className="h-4 w-4 text-primary-600 shrink-0 mt-0.5" />
+                      <div className="space-y-0.5 min-w-0">
+                        <span className="font-semibold text-foreground">Delivery Address: </span>
+                        <span className="text-muted-foreground">
+                          {order.address.building}
+                          {order.address.landmark ? `, Landmark: ${order.address.landmark}` : ''}
+                          {order.address.pincode ? ` - ${order.address.pincode}` : ''}
+                        </span>
+                        {order.address.phoneNumber && (
+                          <div className="flex items-center gap-1 text-muted-foreground pt-0.5">
+                            <Phone className="h-3 w-3 text-primary-600" />
+                            <span>Contact: <strong className="text-foreground">{order.address.phoneNumber}</strong></span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
                   {/* Delivery Status Note */}
                   {order.deliveryDate && (
                     <div className="mt-4 flex items-center gap-2 text-xs text-success font-medium bg-success-50 dark:bg-success-950/30 p-2.5 rounded-lg border border-success-200">
@@ -298,6 +321,27 @@ export function OrderTrackDetail() {
         <div className="my-6">
           <OrderProgressBar orderStatus={order.orderStatus} orderProgress={order.orderProgress} />
         </div>
+
+        {/* Delivery Address (safe check for null/undefined) */}
+        {order.address && (order.address.building || order.address.pincode) && (
+          <div className="mb-6 flex items-start gap-3 rounded-2xl border border-border bg-muted/30 p-4 text-xs sm:text-sm">
+            <MapPin className="h-4 w-4 text-primary-600 shrink-0 mt-0.5" />
+            <div className="space-y-0.5 min-w-0">
+              <p className="font-semibold text-foreground">Delivery Address</p>
+              <p className="text-muted-foreground">
+                {order.address.building}
+                {order.address.landmark ? `, Landmark: ${order.address.landmark}` : ''}
+                {order.address.pincode ? ` - ${order.address.pincode}` : ''}
+              </p>
+              {order.address.phoneNumber && (
+                <div className="flex items-center gap-1.5 text-muted-foreground pt-1">
+                  <Phone className="h-3.5 w-3.5 text-primary-600" />
+                  <span>Phone: <strong className="text-foreground">{order.address.phoneNumber}</strong></span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         <div className="space-y-4 mt-6">
           <h2 className="text-lg font-semibold text-foreground">Items</h2>

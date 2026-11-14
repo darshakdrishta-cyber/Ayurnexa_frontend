@@ -13,6 +13,8 @@ import {
   ChevronUp,
   CreditCard,
   Calendar,
+  MapPin,
+  Phone,
 } from 'lucide-react'
 import { Button } from '../../components/common/Button'
 import { Card } from '../../components/common/Card'
@@ -290,6 +292,27 @@ export function AdminOrders() {
                                   <strong className="text-foreground">{order.paymentMethod || 'COD'}</strong>
                                 </span>
                               </div>
+
+                              {/* Delivery Address (safe check for null/undefined) */}
+                              {order.address && (order.address.building || order.address.pincode) && (
+                                <div className="mb-3.5 flex items-start gap-2.5 rounded-xl border border-border bg-card p-3 text-xs">
+                                  <MapPin className="h-4 w-4 text-primary-600 shrink-0 mt-0.5" />
+                                  <div className="space-y-0.5 min-w-0">
+                                    <span className="font-semibold text-foreground">Delivery Address: </span>
+                                    <span className="text-muted-foreground">
+                                      {order.address.building}
+                                      {order.address.landmark ? `, Landmark: ${order.address.landmark}` : ''}
+                                      {order.address.pincode ? ` - ${order.address.pincode}` : ''}
+                                    </span>
+                                    {order.address.phoneNumber && (
+                                      <div className="flex items-center gap-1 text-muted-foreground pt-0.5">
+                                        <Phone className="h-3 w-3 text-primary-600" />
+                                        <span>Customer Phone: <strong className="text-foreground">{order.address.phoneNumber}</strong></span>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              )}
 
                               <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
                                 {items.map((item, idx) => {

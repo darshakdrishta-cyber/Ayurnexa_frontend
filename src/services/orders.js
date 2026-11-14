@@ -84,6 +84,14 @@ export function normalizeOrder(order) {
     totalAmount: order.price ?? order.totalAmount ?? order.total ?? 0,
     expectedDeliveryDate: order.expectedDeliveryDate || null,
     deliveryDate: order.deliveryDate || null,
+    address: order.address
+      ? {
+          building: order.address.building || '',
+          landmark: order.address.landmark || '',
+          pincode: order.address.pincode || '',
+          phoneNumber: order.address.phoneNumber || '',
+        }
+      : null,
     active: order.active ?? true,
     user: order.user || null,
     createdAt: order.createdAt || null,
