@@ -50,6 +50,16 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            VITE_API_BASE_URL=${{ vars.VITE_API_BASE_URL }}
+            VITE_API_KEY=${{ secrets.VITE_API_KEY }}
+            VITE_APP_NAME=${{ vars.VITE_APP_NAME }}
+            VITE_GOOGLE_CLIENT_ID=${{ secrets.VITE_GOOGLE_CLIENT_ID }}
+            VITE_RAZORPAY_KEY_ID=${{ secrets.VITE_RAZORPAY_KEY_ID }}
+            VITE_SUPABASE_URL=${{ vars.VITE_SUPABASE_URL }}
+            VITE_SUPABASE_PUBLISHABLE_KEY=${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+            VITE_SUPABASE_SECRET_KEY=${{ secrets.VITE_SUPABASE_SECRET_KEY }}
+            VITE_SUPABASE_BUCKET=${{ vars.VITE_SUPABASE_BUCKET }}
 
   deploy:
     needs: build-and-push
@@ -68,10 +78,9 @@ jobs:
           script: |
             set -e
             ENV_FILE=/opt/Ayurnexafrontend/.env
-            mkdir -p /opt/Ayurnexafrontend
             if [ ! -f "$ENV_FILE" ]; then
-              echo "Notice: $ENV_FILE not found, creating an empty .env file."
-              touch "$ENV_FILE"
+              echo "Required environment file not found: $ENV_FILE" >&2
+              exit 1
             fi
             echo "$GHCR_TOKEN" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker pull ghcr.io/${{ github.repository_owner }}/Ayurnexaa-frontend:latest
