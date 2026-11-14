@@ -8,7 +8,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository_owner }}/Ayurnexaa-frontend
+  IMAGE_NAME: ${{ github.repository_owner }}/ayurnexa-frontend
 
 jobs:
   build-and-push:
@@ -83,7 +83,7 @@ jobs:
               exit 1
             fi
             echo "$GHCR_TOKEN" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            docker pull ghcr.io/${{ github.repository_owner }}/Ayurnexaa-frontend:latest
+            docker pull ghcr.io/${{ github.repository_owner }}/ayurnexa-frontend:latest
             # remove any container named Ayurnexaa or publishing port 80
             docker rm -f Ayurnexaa || true
             # free port 5173 if occupied
@@ -91,7 +91,7 @@ jobs:
             for pid in $(ss -ltnp 'sport = :5173' 2>/dev/null | grep -oP 'pid=\K[0-9]+' | sort -u); do kill -9 "$pid" || true; done
             docker rm -f Ayurnexaa || true
             for c in $(docker ps -q --filter "publish=5173"); do docker rm -f "$c" || true; done
-            if ! docker run -d --name Ayurnexaa --env-file "$ENV_FILE" -p 5173:80 --restart unless-stopped ghcr.io/${{ github.repository_owner }}/Ayurnexaa-frontend:latest; then
+            if ! docker run -d --name Ayurnexaa --env-file "$ENV_FILE" -p 5173:80 --restart unless-stopped ghcr.io/${{ github.repository_owner }}/ayurnexa-frontend:latest; then
               echo "Failed to start the Ayurnexaa container." >&2
               docker logs Ayurnexaa 2>&1 || true
               exit 1
