@@ -15,11 +15,14 @@ import {
   Package,
   ExternalLink,
   RefreshCw,
+  MapPin,
+  Edit3,
 } from 'lucide-react'
 import { Button, LinkButton } from '../components/common/Button'
 import { Card } from '../components/common/Card'
 import { Reveal } from '../components/common/Reveal'
 import { ProductImage } from '../components/common/ProductImage'
+import { AddressModal } from '../components/cart/AddressModal'
 import { useCart } from '../context/CartContext'
 import { useAppDispatch, useAppSelector } from '../hooks/redux'
 import {
@@ -41,6 +44,15 @@ export default function CartPage() {
   const location = useLocation()
   const dispatch = useAppDispatch()
   const [paymentMethod, setPaymentMethod] = useState('UPI')
+  const [showAddressModal, setShowAddressModal] = useState(false)
+  const [address, setAddress] = useState(() => {
+    try {
+      const saved = localStorage.getItem('ayurnexa_delivery_address')
+      return saved ? JSON.parse(saved) : null
+    } catch {
+      return null
+    }
+  })
 
   const [status, setStatus] = useState({
     state: 'idle', // 'idle' | 'loading' | 'payment_pending' | 'verifying' | 'success' | 'error'
@@ -53,6 +65,7 @@ export default function CartPage() {
 
   const itemsRef = useRef(items)
   const statusRef = useRef(status)
+  const addressRef = useRef(address)
 
   useEffect(() => {
     itemsRef.current = items
@@ -62,20 +75,34 @@ export default function CartPage() {
     statusRef.current = status
   }, [status])
 
+  useEffect(() => {
+    addressRef.current = address
+  }, [address])
+
+  const handleSaveAddress = (newAddress) => {
+    setAddress(newAddress)
+    try {
+      localStorage.setItem('ayurnexa_delivery_address', JSON.stringify(newAddress))
+    } catch {}
+    setShowAddressModal(false)
+  }
+
   const total = subtotal + DELIVERY_FEE
 
-  const placeOrder = useCallback(async (paymentId, overrideItems) => {
+  const placeOrder = useCallback(async (paymentId, overrideItems, overrideAddress) => {
     const orderItems = overrideItems && overrideItems.length ? overrideItems : itemsRef.current
     if (!orderItems.length) {
       throw new Error('Your cart is empty. Please add items to complete checkout.')
     }
 
+    const targetAddress = overrideAddress || addressRef.current
     const expectedDeliveryDate = new Date(Date.now() + 5 * 864e5).toISOString().slice(0, 10)
     const order = await dispatch(
       createOrderThunk({
         paymentId,
         expectedDeliveryDate,
         items: orderItems.map((i) => ({ productId: String(i.id), quantity: i.qty })),
+        address: targetAddress,
       })
     ).unwrap()
 
@@ -95,7 +122,7 @@ export default function CartPage() {
     })
   }, [clear, dispatch])
 
-  const verifyCheckoutPayment = useCallback(async (overridePaymentRecordId, overrideItems) => {
+  const verifyCheckoutPayment = useCallback(async (overridePaymentRecordId, overrideItems, overrideAddress) => {
     const targetPaymentRecordId = overridePaymentRecordId || statusRef.current.paymentRecordId
     if (!targetPaymentRecordId) return
 
@@ -138,7 +165,7 @@ export default function CartPage() {
         return
       }
 
-      await placeOrder(targetPaymentRecordId, overrideItems)
+      await placeOrder(targetPaymentRecordId, overrideItems, overrideAddress)
     } catch (error) {
       const msg =
         typeof error === 'string'
@@ -162,6 +189,7 @@ export default function CartPage() {
 
     if (queryPaymentId && isAuthenticated) {
       let savedItems = itemsRef.current
+      let savedAddress = null
       try {
         const saved = sessionStorage.getItem('Ayurnexaa_pending_payment')
         if (saved) {
@@ -169,10 +197,13 @@ export default function CartPage() {
           if (parsed.items && parsed.items.length) {
             savedItems = parsed.items
           }
+          if (parsed.address) {
+            savedAddress = parsed.address
+          }
         }
       } catch {}
 
-      verifyCheckoutPayment(queryPaymentId, savedItems)
+      verifyCheckoutPayment(queryPaymentId, savedItems, savedAddress)
       return
     }
 
@@ -216,6 +247,11 @@ export default function CartPage() {
       return
     }
 
+    if (!address || !address.building || !address.pincode || !address.phoneNumber) {
+      setShowAddressModal(true)
+      return
+    }
+
     setStatus({ state: 'loading', message: '', orderId: '', deliveryDate: '' })
     const idempotencyKey = newIdempotencyKey('checkout')
 
@@ -224,7 +260,7 @@ export default function CartPage() {
         // Create PayU payment link: POST /api/payments
         const orderId = `order-${Date.now()}`
         const customerName = user?.username || user?.name || user?.email?.split('@')[0] || 'Customer'
-        const customerContact = user?.phone || user?.mobile || ''
+        const customerContact = address?.phoneNumber || user?.phone || user?.mobile || ''
         const customerEmail = user?.email || ''
 
         // Create PayU payment link: POST /api/payments { orderId, amount, paymentMethod: 'UPI', idempotencyKey, customerName, customerContact, customerEmail }
@@ -274,6 +310,7 @@ export default function CartPage() {
               idempotencyKey,
               items: items.map((i) => ({ id: String(i.id), qty: i.qty })),
               total,
+              address,
               createdAt: Date.now(),
             })
           )
@@ -299,7 +336,7 @@ export default function CartPage() {
       const paymentId =
         payment?.id || payment?.paymentRecordId || payment?.paymentId || payment?._id
       if (!paymentId) throw new Error('Payment record was not returned.')
-      await placeOrder(paymentId)
+      await placeOrder(paymentId, null, address)
     } catch (error) {
       const msg =
         typeof error === 'string'
@@ -510,6 +547,52 @@ export default function CartPage() {
               </div>
             </div>
 
+            {/* Delivery Address Section */}
+            <div className="mt-6 space-y-2 border-t border-border pt-4">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-secondary-600 dark:text-secondary-400">
+                  Delivery address
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setShowAddressModal(true)}
+                  className="text-xs font-semibold text-primary-600 hover:text-primary-700 dark:text-primary-400 flex items-center gap-1"
+                >
+                  <Edit3 className="h-3.5 w-3.5" />
+                  {address ? 'Change' : 'Add address'}
+                </button>
+              </div>
+
+              {address ? (
+                <div
+                  onClick={() => setShowAddressModal(true)}
+                  className="cursor-pointer rounded-2xl border border-border/80 bg-muted/40 p-3.5 transition hover:border-primary-300 dark:hover:border-primary-700"
+                >
+                  <div className="flex items-start gap-2.5">
+                    <MapPin className="h-4 w-4 text-primary-600 shrink-0 mt-0.5" />
+                    <div className="text-xs text-foreground space-y-0.5">
+                      <p className="font-semibold">{address.building}</p>
+                      {address.landmark && (
+                        <p className="text-muted-foreground">Landmark: {address.landmark}</p>
+                      )}
+                      <p className="text-muted-foreground">
+                        Pincode: <strong className="text-foreground">{address.pincode}</strong> · Phone: <strong className="text-foreground">{address.phoneNumber}</strong>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setShowAddressModal(true)}
+                  className="flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-border py-3 text-xs font-semibold text-muted-foreground hover:border-primary-400 hover:text-foreground transition"
+                >
+                  <MapPin className="h-4 w-4 text-primary-600" />
+                  + Click to fill delivery address before payment
+                </button>
+              )}
+            </div>
+
             {/* Payment Method Selection */}
             <div className="mt-6 space-y-3">
               <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-secondary-600 dark:text-secondary-400">
@@ -537,7 +620,13 @@ export default function CartPage() {
                     status.state === 'verifying' ||
                     status.state === 'payment_pending'
                   }
-                  onClick={() => setPaymentMethod(opt.id)}
+                  onClick={() => {
+                    if (!address) {
+                      setShowAddressModal(true)
+                    } else {
+                      setPaymentMethod(opt.id)
+                    }
+                  }}
                   aria-pressed={paymentMethod === opt.id}
                   className={`flex w-full items-center gap-3 rounded-2xl border px-4 py-3 text-left transition ${
                     paymentMethod === opt.id
@@ -662,6 +751,14 @@ export default function CartPage() {
           </Card>
         </Reveal>
       </div>
+
+      {/* Address Form Modal */}
+      <AddressModal
+        isOpen={showAddressModal}
+        onClose={() => setShowAddressModal(false)}
+        onSubmit={handleSaveAddress}
+        initialAddress={address}
+      />
     </div>
   )
 }

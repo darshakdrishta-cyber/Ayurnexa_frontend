@@ -60,9 +60,9 @@ export const fetchOrder = createAsyncThunk('orders/fetchOrder', async (orderId, 
 
 export const createOrderThunk = createAsyncThunk(
   'orders/createOrder',
-  async ({ paymentId, items, expectedDeliveryDate }, { rejectWithValue }) => {
+  async ({ paymentId, items, expectedDeliveryDate, address }, { rejectWithValue }) => {
     try {
-      const data = await createOrder({ paymentId, items, expectedDeliveryDate })
+      const data = await createOrder({ paymentId, items, expectedDeliveryDate, address })
       return data
     } catch (error) {
       return rejectWithValue(error?.response?.data?.message || 'Failed to create order')

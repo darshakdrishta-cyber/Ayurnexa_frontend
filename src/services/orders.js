@@ -96,8 +96,13 @@ export function normalizeOrder(order) {
  * POST /api/orders — requires a saved Payment:
  * paymentMethod === 'COD' or payment.status === 'SUCCESS'
  */
-export async function createOrder({ paymentId, items, expectedDeliveryDate }) {
-  const { data } = await api.post('/orders', { paymentId, items, expectedDeliveryDate })
+export async function createOrder({ paymentId, items, expectedDeliveryDate, address }) {
+  const { data } = await api.post('/orders', {
+    paymentId,
+    items,
+    expectedDeliveryDate,
+    ...(address ? { address } : {}),
+  })
   return normalizeOrder(data)
 }
 

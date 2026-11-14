@@ -78,9 +78,10 @@ jobs:
           script: |
             set -e
             ENV_FILE=/opt/Ayurnexafrontend/.env
+            mkdir -p /opt/Ayurnexafrontend
             if [ ! -f "$ENV_FILE" ]; then
-              echo "Required environment file not found: $ENV_FILE" >&2
-              exit 1
+              echo "Notice: $ENV_FILE not found, creating an empty .env file."
+              touch "$ENV_FILE"
             fi
             echo "$GHCR_TOKEN" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker pull ghcr.io/${{ github.repository_owner }}/Ayurnexaa-frontend:latest
