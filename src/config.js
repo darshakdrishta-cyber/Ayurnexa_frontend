@@ -1,4 +1,4 @@
-const runtimeConfig = window.__AYURNEXA_CONFIG__ || {}
+const runtimeConfig = window.__AYURNEXA_CONFIG__ || window.__AyurnexaA_CONFIG__ || {}
 
 export const appConfig = {
   apiBaseUrl:

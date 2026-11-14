@@ -50,16 +50,6 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          build-args: |
-            VITE_API_BASE_URL=${{ vars.VITE_API_BASE_URL }}
-            VITE_API_KEY=${{ secrets.VITE_API_KEY }}
-            VITE_APP_NAME=${{ vars.VITE_APP_NAME }}
-            VITE_GOOGLE_CLIENT_ID=${{ secrets.VITE_GOOGLE_CLIENT_ID }}
-            VITE_RAZORPAY_KEY_ID=${{ secrets.VITE_RAZORPAY_KEY_ID }}
-            VITE_SUPABASE_URL=${{ vars.VITE_SUPABASE_URL }}
-            VITE_SUPABASE_PUBLISHABLE_KEY=${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
-            VITE_SUPABASE_SECRET_KEY=${{ secrets.VITE_SUPABASE_SECRET_KEY }}
-            VITE_SUPABASE_BUCKET=${{ vars.VITE_SUPABASE_BUCKET }}
 
   deploy:
     needs: build-and-push
